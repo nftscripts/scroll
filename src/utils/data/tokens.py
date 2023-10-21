@@ -9,31 +9,32 @@ liquidity_tokens = {
     'PunkSwap': {
         'ETH': {
             'USDC': '0x6562e87944e4D6cCF9839C662db32E6b19f72cDe',
-            'USDT': '0xB12abB5bcB50c2aA6f1B54447046640010B33933'
+            'USDT': '0xB12abB5bcB50c2aA6f1B54447046640010B33933',
         },
         'USDC': {
-            'USDT': '0x2307DBafED1464605E5CfC7fbC7aE761Aa527f45'
+            'USDT': '0x2307DBafED1464605E5CfC7fbC7aE761Aa527f45',
         }
     },
     'SkyDrome': {
         'USDC': {
-            'USDT': '0xa631B2A2C3469aa1bF5dc49977207F378D16d7d8'
+            'USDT': '0xa631B2A2C3469aa1bF5dc49977207F378D16d7d8',
         }
     },
     'SyncSwap': {
         'ETH': {
-            'USDT': '0x78ea8E533c834049dE625e05F0B4DeFfe9DB5f6e'
+            'USDT': '0x78ea8E533c834049dE625e05F0B4DeFfe9DB5f6e',
+            'USDC': '0x814A23B053FD0f102AEEda0459215C2444799C70',
         },
         'USDC': {
-            'ETH': '0x814A23B053FD0f102AEEda0459215C2444799C70'
+            'ETH': '0x814A23B053FD0f102AEEda0459215C2444799C70',
         }
     },
     'SpaceFi': {
         'ETH': {
-            'USDC': '0x6905C59Be1a7Ea32d1F257E302401eC9a1401C52'
+            'USDC': '0x6905C59Be1a7Ea32d1F257E302401eC9a1401C52',
         },
         'USDC': {
-            'USDT': '0x663864d52C38741001A73D270F4Da50005c647fA'
+            'USDT': '0x663864d52C38741001A73D270F4Da50005c647fA',
         }
     }
 }

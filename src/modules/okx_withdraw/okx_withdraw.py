@@ -111,8 +111,17 @@ class OkxDeposit(Account):
             'to': Web3.to_checksum_address(self.receiver_address),
             'value': amount,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
-            'gas': 0
+            'maxPriorityFeePerGas': 0,
+            'maxFeePerGas': 0,
+            'gasPrice': 0,
+            'gas': 0,
         }
+        if self.from_chain.lower() == 'scroll':
+            tx.pop('maxPriorityFeePerGas')
+            tx.pop('maxFeePerGas')
+        else:
+            tx.pop('gasPrice')
+
         if self.from_chain.lower() != 'scroll':
             tx.update({'maxFeePerGas': 0})
             tx.update({'maxPriorityFeePerGas': 0})
@@ -121,7 +130,7 @@ class OkxDeposit(Account):
             tx.update({'gasPrice': self.web3.eth.gas_price})
         else:
             tx.update({'maxFeePerGas': self.web3.eth.gas_price})
-            tx.update({'maxPriorityFeePerGas': self.web3.eth.max_priority_fee})
+            tx.update({'maxPriorityFeePerGas': self.web3.eth.gas_price})
 
         gas_limit = self.web3.eth.estimate_gas(tx)
         tx.update({'gas': gas_limit})

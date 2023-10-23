@@ -1,3 +1,6 @@
+from asyncio import sleep
+import random
+
 from loguru import logger
 
 from src.modules.bridges.orbiter.oribter_bridge import OrbiterBridge
@@ -139,6 +142,31 @@ async def process_orbiter_bridge(private_key: str) -> None:
     )
     logger.info(owl_bridge)
     await owl_bridge.bridge()
+
+
+async def process_swap_all_to_eth(private_key: str) -> None:
+    tokens_list = SwapAllTokensConfig.tokens_list
+    to_token = SwapAllTokensConfig.to_token
+    random.shuffle(tokens_list)
+    amount = 0
+    use_percentage = False
+    swap_percentage = 0
+    swap_all_balance = True
+    swap_list = [SkyDromeSwap, PunkSwap, SyncSwapSwap, SpaceFiSwap]
+    for token in tokens_list:
+        swap_class = random.choice(swap_list)
+        swap_all_tokens_swap = swap_class(private_key=private_key,
+                                          from_token=token,
+                                          to_token=to_token,
+                                          amount=amount,
+                                          use_percentage=use_percentage,
+                                          swap_percentage=swap_percentage,
+                                          swap_all_balance=swap_all_balance)
+        logger.info(swap_all_tokens_swap)
+        await swap_all_tokens_swap.swap()
+        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+        logger.info(f'Sleeping {random_sleep} seconds...')
+        await sleep(random_sleep)
 
 
 async def process_skydrome_swap(private_key: str) -> None:

@@ -63,9 +63,9 @@ async def main() -> None:
         if 'okx_withdraw' in patterns:
             patterns.remove('okx_withdraw')
             patterns.insert(0, 'okx_withdraw')
-        # if 'swap_all_to_eth' in patterns:
-        #     patterns.remove('swap_all_to_eth')
-        #     patterns.append('swap_all_to_eth')
+        if 'swap_all_to_eth' in patterns:
+            patterns.remove('swap_all_to_eth')
+            patterns.append('swap_all_to_eth')
         if withdraw_bridges:
             random_withdraw_bridge = random.choice(withdraw_bridges)
             patterns.remove(random_withdraw_bridge)

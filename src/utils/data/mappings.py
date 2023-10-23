@@ -16,6 +16,7 @@ module_handlers = {
     'syncswap_swap': process_sync_swap_swap,
     'syncswap_liquidity': process_sync_swap_liquidity,
     'syncswap_liquidity_remove': process_sync_swap_liquidity_remove,
+    'swap_all_to_eth': process_swap_all_to_eth,
     'wrapper': process_wrapper,
     'okx_withdraw': process_okx_withdrawal,
     'okx_deposit': process_okx_deposit,

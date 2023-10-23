@@ -4,7 +4,6 @@ from web3.contract import Contract
 from eth_typing import Address
 from web3 import Web3
 
-# from src.utils.base_liquidity_remove import BaseLiquidityRemove
 from src.utils.base_liquidity_remove import BaseLiquidityRemove
 from src.utils.base_liquidity import BaseLiquidity
 from src.utils.base_swap import BaseSwap
@@ -24,8 +23,9 @@ from src.modules.swaps.spacefi.utils.transaction_data import (
 
 
 class SpaceFiSwap(BaseSwap):
-    def __init__(self, private_key: str, from_token: str, to_token: str, amount: Union[float, List[float]],
-                 use_percentage: bool, swap_percentage: Union[float, List[float]], swap_all_balance: bool) -> None:
+    def __init__(self, private_key: str, from_token: str, to_token: Union[str, List[str]],
+                 amount: Union[float, List[float]], use_percentage: bool, swap_percentage: Union[float, List[float]],
+                 swap_all_balance: bool) -> None:
         contract_address = contracts['spacefi']
         abi_name = abi_names['spacefi']
         dex_name = self.__class__.__name__

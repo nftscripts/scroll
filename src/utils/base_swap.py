@@ -15,7 +15,7 @@ from config import USE_DATABASE
 
 
 class BaseSwap(ABC, Account):
-    def __init__(self, private_key: str, from_token: str, to_token: str, amount: Union[float, List[float]],
+    def __init__(self, private_key: str, from_token: str, to_token: Union[str, List[str]], amount: Union[float, List[float]],
                  use_percentage: bool, swap_percentage: Union[float, List[float]], swap_all_balance: bool,
                  contract_address: str, abi_name: str, dex_name: str) -> None:
 
@@ -23,7 +23,13 @@ class BaseSwap(ABC, Account):
 
         self.private_key = private_key
         self.from_token = from_token
-        self.to_token = to_token
+        if isinstance(to_token, List):
+            self.to_token = random.choice(to_token)
+        elif isinstance(to_token, str):
+            self.to_token = to_token
+        else:
+            self.logger.error(f'to_token must be str or list[str]. Got {type(to_token)}')
+            return
         if isinstance(amount, List):
             self.amount = round(random.uniform(amount[0], amount[1]), 7)
         else:

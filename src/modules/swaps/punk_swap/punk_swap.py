@@ -24,8 +24,9 @@ from src.modules.swaps.punk_swap.utils.transaction_data import (
 
 
 class PunkSwap(BaseSwap):
-    def __init__(self, private_key: str, from_token: str, to_token: str, amount: Union[float, List[float]],
-                 use_percentage: bool, swap_percentage: Union[float, List[float]], swap_all_balance: bool) -> None:
+    def __init__(self, private_key: str, from_token: str, to_token: Union[str, List[str]],
+                 amount: Union[float, List[float]], use_percentage: bool, swap_percentage: Union[float, List[float]],
+                 swap_all_balance: bool) -> None:
         contract_address = contracts['punkswap']
         abi_name = abi_names['punkswap']
         dex_name = self.__class__.__name__

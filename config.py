@@ -125,9 +125,14 @@ class SwapAllTokensConfig:
 
 
 class SyncSwapSwapConfig:
+    """
+    from_token: str.
+    to_token: str | list[str]. If to_token = ['USDC', 'USDT'] it will randomly take USDT or USDC.
+    """
+
     from_token = 'ETH'
-    to_token = 'USDC'
-    amount = 0.002
+    to_token = ['USDC', 'USDT']
+    amount = 0.001
     use_percentage = False
     swap_percentage = 0.5
     swap_all_balance = True

@@ -36,6 +36,22 @@ def create_swap_tx(from_token: str, to_token: str, contract: Contract, amount_ou
             'gasPrice': 0,
             'gas': 0
         })
+    elif to_token.lower() == 'eth':
+        tx = contract.functions.swapExactTokensForETH(
+            amount,
+            int(amount_out * (1 - SLIPPAGE)),
+            [Web3.to_checksum_address(from_token_address), Web3.to_checksum_address(tokens['PUNK']),
+             Web3.to_checksum_address(to_token_address)] if not from_token.upper() == 'PUNK' else
+            [Web3.to_checksum_address(from_token_address), Web3.to_checksum_address(to_token_address)],
+            account_address,
+            int(time() + 1200)
+        ).build_transaction({
+            'value': 0,
+            'nonce': web3.eth.get_transaction_count(account_address),
+            'from': account_address,
+            'gasPrice': 0,
+            'gas': 0
+        })
     else:
         tx = contract.functions.swapExactTokensForTokens(
             amount,

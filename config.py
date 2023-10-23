@@ -22,7 +22,8 @@ syncswap_swap = False
 specefi_swap = False
 wrapper = False
 
-swap_all_to_eth = True
+swap_all_to_eth = False
+random_dex_swap = False
 
 # --- Liquidity --- #
 punk_swap_liquidity = False
@@ -122,6 +123,13 @@ class OwlBridgeConfig:
 class SwapAllTokensConfig:
     tokens_list = ['USDT', 'USDC', 'PUNK']
     to_token = 'ETH'
+
+
+class RandomDexSwapConfig:
+    from_token = 'ETH'
+    to_token = ['USDT', 'USDC']
+    amount = [0.001, 0.0015]
+    num_swaps = 2
 
 
 class SyncSwapSwapConfig:

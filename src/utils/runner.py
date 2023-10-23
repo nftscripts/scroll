@@ -169,6 +169,29 @@ async def process_swap_all_to_eth(private_key: str) -> None:
         await sleep(random_sleep)
 
 
+async def process_random_dex_swap(private_key: str) -> None:
+    token = RandomDexSwapConfig.from_token
+    to_token = RandomDexSwapConfig.to_token
+    amount = RandomDexSwapConfig.amount
+    num_swaps = RandomDexSwapConfig.num_swaps
+    swap_list = [SyncSwapSwap, PunkSwap, SkyDromeSwap, SpaceFiSwap]
+    for _ in range(num_swaps):
+        swap_class = random.choice(swap_list)
+        random_dex_swap = swap_class(private_key=private_key,
+                                     from_token=token,
+                                     to_token=to_token,
+                                     amount=amount,
+                                     use_percentage=False,
+                                     swap_percentage=0,
+                                     swap_all_balance=False)
+
+        logger.info(random_dex_swap)
+        await random_dex_swap.swap()
+        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+        logger.info(f'Sleeping {random_sleep} seconds...')
+        await sleep(random_sleep)
+
+
 async def process_skydrome_swap(private_key: str) -> None:
     from_token = SkyDromeSwapConfig.from_token
     to_token = SkyDromeSwapConfig.to_token

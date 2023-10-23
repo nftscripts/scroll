@@ -37,7 +37,7 @@ class SyncSwapSwap(BaseSwap):
 
     def get_amount_out(self, contract: Contract, amount: int, from_token_address: Address,
                        to_token_address: Address) -> Types.AmountOut:
-        return get_amount_out(amount, from_token_address, to_token_address, self.web3)
+        return get_amount_out(amount, from_token_address, to_token_address, self.web3, self.account_address)
 
     def create_swap_tx(self, from_token: str, to_token: str, contract: Contract, amount_out: int,
                        from_token_address: str, to_token_address: str, account_address: Address, amount: int,
@@ -60,7 +60,7 @@ class SyncSwapLiquidity(BaseLiquidity):
 
     def get_amount_out(self, contract: Contract, amount: int, from_token_address: Address,
                        to_token_address: Address) -> Types.AmountOut:
-        return get_amount_out(contract, amount, from_token_address, to_token_address)
+        return get_amount_out(contract, amount, from_token_address, to_token_address, self.account_address)
 
     def create_liquidity_tx(self, from_token: str, contract: Contract, amount_out: int, from_token_address: str,
                             to_token_address: str, account_address: Address, amount: int, web3: Web3

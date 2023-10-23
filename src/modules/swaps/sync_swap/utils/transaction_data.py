@@ -11,19 +11,31 @@ from src.utils.user.utils import Utils
 from config import SLIPPAGE
 
 
-def get_amount_out(amount: int, from_token_address: Address, to_token_address: Address, web3: Web3) -> int:
+def get_amount_out(amount: int, from_token_address: Address, to_token_address: Address, web3: Web3,
+                   account_address: Address) -> int:
+
+    pool_address = get_pool(web3, from_token_address, to_token_address)
     utils = Utils()
-    contract = utils.load_contract('0xAA111C62cDEEf205f70E6722D1E22274274ec12F', web3, 'skydrome')
-    amount_out = contract.functions.getAmountsOut(
+    pool_contract = utils.load_contract(pool_address, web3, 'classic_pool_syncswap_data')
+    amount_out = pool_contract.functions.getAmountOut(
+        Web3.to_checksum_address(from_token_address),
         amount,
-        [[from_token_address, to_token_address, False]]
+        account_address
     ).call()
-    return amount_out[1]
+
+    return amount_out
 
 
-def get_pool(web3: Web3, classic_pool_factory_address: str, from_token_address: str, to_token_address: str) -> str:
+def get_pool(web3: Web3, from_token_address: str, to_token_address: str) -> str:
+    if from_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4' and \
+            to_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' \
+            or from_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' and \
+            to_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4':
+        factory_address = '0x5b9f21d407F35b10CbfDDca17D5D84b129356ea3'
+    else:
+        factory_address = '0x37BAc764494c8db4e54BDE72f6965beA9fa0AC2d'
     classic_pool_factory = web3.eth.contract(
-        address=Web3.to_checksum_address(classic_pool_factory_address),
+        address=Web3.to_checksum_address(factory_address),
         abi=Utils.load_abi('classic_pool_factory_address'))
     pool_address = classic_pool_factory.functions.getPool(Web3.to_checksum_address(from_token_address),
                                                           Web3.to_checksum_address(to_token_address)).call()
@@ -33,16 +45,7 @@ def get_pool(web3: Web3, classic_pool_factory_address: str, from_token_address: 
 
 def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_token_address: str,
                    to_token_address: str, account_address: Address, amount: int, web3: Web3) -> TxParams:
-    if from_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4' and \
-            to_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' \
-            or from_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' and \
-            to_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4':
-        factory_address = '0x5b9f21d407F35b10CbfDDca17D5D84b129356ea3'
-    else:
-        factory_address = '0x37BAc764494c8db4e54BDE72f6965beA9fa0AC2d'
-
-    pool_address = get_pool(web3, factory_address, from_token_address, to_token_address)
-
+    pool_address = get_pool(web3, from_token_address, to_token_address)
     if pool_address == "0x0000000000000000000000000000000000000000":
         logger.error('Pool does not exist')
         return
@@ -50,7 +53,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
     web3.middleware_onion.inject(geth_poa_middleware, layer=0)
     swap_data = encode(
         ["address", "address", "uint8"],
-        [Web3.to_checksum_address(from_token_address), account_address, 1 if from_token.upper() == 'BUSD' else 2]
+        [Web3.to_checksum_address(from_token_address), account_address, 1]
     )
     native_eth_address = "0x0000000000000000000000000000000000000000"
     steps = [{
@@ -83,15 +86,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
 
 def create_liquidity_tx(from_token: str, contract: Contract, to_token_address: str,
                         account_address: Address, amount: int, web3: Web3, from_token_address) -> TxParams:
-    if from_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4' and \
-            to_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' \
-            or from_token_address == '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df' and \
-            to_token_address == '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4':
-        factory_address = '0x5b9f21d407F35b10CbfDDca17D5D84b129356ea3'
-    else:
-        factory_address = '0x37BAc764494c8db4e54BDE72f6965beA9fa0AC2d'
-
-    pool_address = get_pool(web3, factory_address, from_token_address, to_token_address)
+    pool_address = get_pool(web3, from_token_address, to_token_address)
     if pool_address == "0x0000000000000000000000000000000000000000":
         logger.error('Pool does not exist')
         return

@@ -8,16 +8,21 @@ from src.modules.deploy.utils.data_exctract import (
 
 
 class Deployer(Account):
-    def __init__(self, private_key: str):
+    def __init__(self, private_key: str, use_0x_bytecode: bool):
+        self.use_0x_bytecode = use_0x_bytecode
         super().__init__(private_key)
 
     def __repr__(self) -> str:
         return f'Deploying contract for address [{self.account_address}]'
 
     def deploy(self) -> None:
-        compile_contract()
-        abi = get_abi()
-        bytecode = get_bytecode()
+        if not self.use_0x_bytecode:
+            compile_contract()
+            abi = get_abi()
+            bytecode = get_bytecode()
+        else:
+            abi = self.load_abi('deploy')
+            bytecode = '0x'
 
         contract = self.web3.eth.contract(
             abi=abi,

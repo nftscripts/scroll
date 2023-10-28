@@ -448,8 +448,10 @@ async def process_spacefi_liquidity_remove(private_key: str) -> None:
 
 
 async def process_deploy(private_key: str) -> None:
+    use_0x_bytecode = DeployerConfig.use_0x_bytecode
     deployer = Deployer(
-        private_key=private_key
+        private_key=private_key,
+        use_0x_bytecode=use_0x_bytecode
     )
     logger.info(deployer)
     deployer.deploy()

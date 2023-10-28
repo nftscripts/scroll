@@ -261,3 +261,7 @@ class ZeruisConfig:
     chain_to_bridge: Union[str, List[str]]: ['ARB', 'OP', 'POLYGON', 'BSC', 'AVAX']
     """
     chain_to_bridge = ['ARB', 'OP', 'POLYGON', 'BSC', 'AVAX']
+
+
+class DeployerConfig:
+    use_0x_bytecode = True

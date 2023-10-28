@@ -85,7 +85,7 @@ async def main() -> None:
             await task
             await sleep(time_to_sleep)
 
-        await gather(*tasks)
+    await gather(*tasks)
 
 
 def start_event_loop(awaitable: Awaitable[None]) -> None:

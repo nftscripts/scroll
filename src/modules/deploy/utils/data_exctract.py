@@ -6,7 +6,7 @@ from solcx import (
 )
 
 
-def compile_contract() -> str:
+def compile_contract() -> None:
     install_solc('0.8.0')
     with open('src/modules/deploy/contract/contract.sol', 'r') as file:
         contract = file.read()

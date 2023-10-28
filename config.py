@@ -1,12 +1,14 @@
 RANDOMIZE = True
 SLIPPAGE = 0.03
-MIN_PAUSE = 60
-MAX_PAUSE = 120
+MIN_PAUSE = 10
+MAX_PAUSE = 20
 RETRIES = 3
-PAUSE_BETWEEN_RETRIES = 30
+PAUSE_BETWEEN_RETRIES = 1
 CHECK_GWEI = True
 MAX_GWEI = 25
 USE_DATABASE = True
+
+deploy_contract = True
 
 dmail = False
 
@@ -148,12 +150,12 @@ class SyncSwapSwapConfig:
 
 # --- Swaps --- #
 class SkyDromeSwapConfig:
-    from_token = 'ETH'
-    to_token = 'USDT'
-    amount = 0.001
+    from_token = 'WETH'
+    to_token = 'USDC'
+    amount = 0.0024
     use_percentage = False
     swap_percentage = 0.5
-    swap_all_balance = True
+    swap_all_balance = False
 
 
 class SpaceFiSwapConfig:
@@ -166,7 +168,7 @@ class SpaceFiSwapConfig:
 
 
 class PunkSwapConfig:
-    from_token = 'USDT'
+    from_token = 'USDC'
     to_token = 'ETH'
     amount = [0.0009, 0.0011]
     use_percentage = False
@@ -207,16 +209,16 @@ class SpaceFiLiquidityConfig:
 
 
 class SyncSwapLiquidityConfig:
-    token = 'USDT'
+    token = 'ETH'
     token2 = 'USDC'
-    amount = [1, 1]
+    amount = [0.001, 0.001]
     use_percentage = False
     liquidity_percentage = 0.01
 
 
 class SyncSwapLiquidityRemoveConfig:
-    token = 'USDC'
-    token2 = 'ETH'
+    token = 'ETH'
+    token2 = 'USDC'
     removing_percentage = 0.5
     remove_all = True
 
@@ -236,9 +238,9 @@ class SpaceFiLiquidityRemoveConfig:
 
 
 class SkyDromeLiquidityConfig:
-    token = 'USDC'
-    token2 = 'USDT'
-    amount = [1, 1]
+    token = 'ETH'
+    token2 = 'USDC'
+    amount = [0.001, 0.001]
     use_percentage = False
     liquidity_percentage = 0.01
 

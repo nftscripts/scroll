@@ -7,6 +7,7 @@ from src.modules.bridges.orbiter.oribter_bridge import OrbiterBridge
 from src.modules.bridges.main_bridge.main_bridge import MainBridge
 from src.modules.bridges.owlto.owlto_bridge import OwlBridge
 from src.modules.swaps.wrapper.eth_wrapper import Wrapper
+from src.modules.deploy.contract_deployer import Deployer
 from src.modules.nft.zerius.zerius import Zerius
 from src.utils.user.account import Account
 from src.modules.dmail.dmail import Dmail
@@ -444,3 +445,11 @@ async def process_spacefi_liquidity_remove(private_key: str) -> None:
     )
     logger.info(liquidity_remove)
     await liquidity_remove.remove_liquidity()
+
+
+async def process_deploy(private_key: str) -> None:
+    deployer = Deployer(
+        private_key=private_key
+    )
+    logger.info(deployer)
+    deployer.deploy()

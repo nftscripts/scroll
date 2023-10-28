@@ -23,4 +23,5 @@ module_handlers = {
     'okx_deposit': process_okx_deposit,
     'dmail': process_dmail,
     'zerius': process_zerius_mint_bridge,
+    'deploy_contract': process_deploy,
 }

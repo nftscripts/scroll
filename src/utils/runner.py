@@ -13,6 +13,11 @@ from src.utils.user.account import Account
 from src.modules.dmail.dmail import Dmail
 from config import *
 
+from src.modules.lendings.layerbank.layerbank import (
+    LayerBankWithdraw,
+    LayerBankDeposit,
+)
+
 from src.modules.swaps.spacefi.spacefi_swap import (
     SpaceFiLiquidityRemove,
     SpaceFiLiquidity,
@@ -455,3 +460,39 @@ async def process_deploy(private_key: str) -> None:
     )
     logger.info(deployer)
     deployer.deploy()
+
+
+async def process_layerbank_deposit(private_key: str) -> None:
+    amount = LayerBankDepositConfig.amount
+    use_percentage = LayerBankDepositConfig.use_percentage
+    percentage = LayerBankDepositConfig.percentage
+    only_collateral = LayerBankDepositConfig.only_collateral
+
+    lending = LayerBankDeposit(
+        private_key=private_key,
+        amount=amount,
+        use_percentage=use_percentage,
+        percentage=percentage,
+        only_collateral=only_collateral
+    )
+    logger.info(lending)
+
+    await lending.deposit()
+
+
+async def process_layerbank_withdraw(private_key: str) -> None:
+    amount = LayerBankWithdrawConfig.amount
+    withdraw_all = LayerBankWithdrawConfig.withdraw_all
+    use_percentage = LayerBankWithdrawConfig.use_percentage
+    percentage = LayerBankWithdrawConfig.percentage
+
+    lending = LayerBankWithdraw(
+        private_key=private_key,
+        amount=amount,
+        withdraw_all=withdraw_all,
+        use_percentage=use_percentage,
+        percentage=percentage
+    )
+    logger.info(lending)
+
+    await lending.withdraw()

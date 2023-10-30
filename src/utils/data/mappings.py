@@ -24,4 +24,6 @@ module_handlers = {
     'dmail': process_dmail,
     'zerius': process_zerius_mint_bridge,
     'deploy_contract': process_deploy,
+    'layerbank_deposit': process_layerbank_deposit,
+    'layerbank_withdraw': process_layerbank_withdraw
 }

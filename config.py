@@ -8,9 +8,12 @@ CHECK_GWEI = True
 MAX_GWEI = 25
 USE_DATABASE = True
 
-deploy_contract = True
+deploy_contract = False
 
 dmail = False
+
+layerbank_deposit = False
+layerbank_withdraw = False
 
 # --- Bridges --- #
 main_bridge = False
@@ -265,3 +268,24 @@ class ZeruisConfig:
 
 class DeployerConfig:
     use_0x_bytecode = True
+
+
+class LayerBankDepositConfig:
+    """
+    action: str. deposit/withdraw
+    amount: Union[float, List[float]]
+    use_percentage: bool. True/False
+    percentage: float. 0 - 1.
+    """
+
+    amount = [0.0005, 0.001]
+    use_percentage = False
+    percentage = 0.01
+    only_collateral = True
+
+
+class LayerBankWithdrawConfig:
+    amount = [0.001, 0.002]
+    withdraw_all = True
+    use_percentage = False
+    percentage = 0.01

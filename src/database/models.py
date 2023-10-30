@@ -61,6 +61,15 @@ class DmailTransaction(Base):
     dex_name = Column(String)
 
 
+class LendingTransaction(Base):
+    __tablename__ = 'lending_transactions'
+    id = Column(Integer, Sequence('lending_transaction_id_seq'), primary_key=True)
+    dex_name = Column(String)
+    wallet_address = Column(String)
+    tx_hash = Column(String)
+    amount = Column(Float)
+
+
 class Analytics(Base):
     __tablename__ = 'analytics'
     id = Column(String, primary_key=True)

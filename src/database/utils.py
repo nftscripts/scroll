@@ -18,6 +18,7 @@ from src.database.data.analytics_data import AnalyticData
 
 from src.database.models import (
     LiquidityTransaction,
+    LendingTransaction,
     BridgeTransaction,
     DmailTransaction,
     SwapTransaction,
@@ -33,6 +34,7 @@ class DataBaseUtils:
     MINT_ACTION: str = 'mint'
     BRIDGE_ACTION: str = 'bridge'
     DMAIL_ACTION: str = 'dmail'
+    LENDING_ACTION: str = 'lending'
 
     def __init__(self, action: str) -> None:
         self.__action = action
@@ -48,6 +50,8 @@ class DataBaseUtils:
             self.__table_object = BridgeTransaction
         elif self.__action == self.DMAIL_ACTION:
             self.__table_object = DmailTransaction
+        elif self.__action == self.LENDING_ACTION:
+            self.__table_object = LendingTransaction
         else:
             raise ValueError()
 
@@ -85,6 +89,9 @@ class DataBaseUtils:
             transaction.amount = amount
         elif self.__action == self.DMAIL_ACTION:
             transaction.dex_name = dex_name
+        elif self.__action == self.LENDING_ACTION:
+            transaction.dex_name = dex_name
+            transaction.amount = amount
 
         self.__session.add(transaction)
         self.__session.commit()
@@ -99,10 +106,11 @@ class DataBaseUtils:
     def _update_analytics(self, dex_name: str, wallet_address: Address) -> None:
         analytic_data = AnalyticData(self.__session, dex_name, wallet_address)
         swap_interactions, liquidity_interactions, bridge_interactions, \
-            dmail_interactions, nft_interactions = analytic_data.interactions_data
-        swap_volume, liquidity_volume, bridge_volume = analytic_data.volume_data
+            dmail_interactions, nft_interactions, lending_interactions = analytic_data.interactions_data
+        swap_volume, liquidity_volume, bridge_volume, lending_volume = analytic_data.volume_data
         interactions = \
-            liquidity_interactions + swap_interactions + bridge_interactions + dmail_interactions + nft_interactions
+            liquidity_interactions + swap_interactions + bridge_interactions + dmail_interactions + nft_interactions \
+            + lending_interactions
 
         if swap_volume is None:
             swap_volume = 0
@@ -110,8 +118,10 @@ class DataBaseUtils:
             liquidity_volume = 0
         if bridge_volume is None:
             bridge_volume = 0
+        if lending_volume is None:
+            lending_volume = 0
 
-        total_volume = swap_volume + liquidity_volume + bridge_volume
+        total_volume = swap_volume + liquidity_volume + bridge_volume + lending_volume
 
         analytics_entry = self.__session.query(Analytics).filter_by(dex_name=dex_name,
                                                                     wallet_address=wallet_address).first()

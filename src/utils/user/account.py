@@ -23,7 +23,6 @@ class Account(Utils):
         self.account_address = self.account.address
 
         self.__wallet = Wallet(self.account_address, private_key)
-        # self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
         super().__init__()
 

@@ -81,7 +81,7 @@ class BaseBridge(ABC, Account):
         if self.from_chain == 'SCROLL':
             tx.update({'gasPrice': self.web3.eth.gas_price})
         else:
-            tx.update({'maxFeePerGas': self.web3.eth.gas_price})
+            tx.update({'maxFeePerGas': int(self.web3.eth.gas_price * 1.1)})
             tx.update({'maxPriorityFeePerGas': self.web3.eth.gas_price})
 
         gas_limit = self.web3.eth.estimate_gas(tx)

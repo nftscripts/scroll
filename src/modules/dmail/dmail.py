@@ -37,11 +37,10 @@ class Dmail(Account):
             'to': Web3.to_checksum_address(self.contract_address),
             'data': data,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
-            'gasPrice': 0,
+            'gasPrice': self.web3.eth.gas_price,
             'gas': 0
         }
 
-        tx.update({'gasPrice': self.web3.eth.gas_price})
         gas_limit = self.web3.eth.estimate_gas(tx)
         tx.update({'gas': gas_limit})
 

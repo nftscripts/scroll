@@ -84,9 +84,6 @@ class LayerBankDeposit(Account):
                 'gasPrice': 0,
                 'gas': 0
             })
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
 
@@ -164,9 +161,6 @@ class LayerBankWithdraw(Account):
             'gasPrice': 0,
             'gas': 0
         })
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
 

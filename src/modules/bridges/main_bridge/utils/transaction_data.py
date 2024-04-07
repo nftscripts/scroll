@@ -80,7 +80,7 @@ async def claim_eth(tx_hash: str, private_key: str) -> None:
     })
     while True:
         try:
-            tx.update({'maxFeePerGas': web3.eth.gas_price})
+            tx.update({'maxFeePerGas': int(web3.eth.gas_price * 1.1)})
             tx.update({'maxPriorityFeePerGas': web3.eth.gas_price})
             gas_limit = web3.eth.estimate_gas(tx)
             tx.update({'gas': gas_limit})

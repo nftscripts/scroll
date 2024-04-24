@@ -69,10 +69,6 @@ class Wrapper(Account):
 
         tx = create_wrap_tx(self.account_address, self.token, self.web3, amount)
 
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
-
         tx_hash = self.sign_transaction(tx)
 
         self.logger.success(

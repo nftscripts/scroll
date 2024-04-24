@@ -14,21 +14,23 @@ from src.utils.user.utils import Utils
 def create_bridge_tx(contract: Contract, amount: int, web3: Web3, account_address: Address) -> TxParams:
     if contract.address == web3.to_checksum_address('0xF8B1378579659D8F7EE5f3C929c2f3E332E41Fd6'):
         utils = Utils()
-        oracle_contract = utils.load_contract('0x987e300fDfb06093859358522a79098848C33852',
-                                              web3,
-                                              'oracle')
+        oracle_contract = utils.load_contract(
+            '0x0d7E906BD9cAFa154b048cFa766Cc1E54E39AF9B',
+            web3,
+            'oracle'
+        )
         fee = oracle_contract.functions.estimateCrossDomainMessageFee(168000).call()
 
-        tx = contract.functions.depositETH(
+        tx = contract.functions.sendMessage(
+            account_address,
             amount,
+            "0x",
             168000
         ).build_transaction({
             'value': amount + fee,
             'nonce': web3.eth.get_transaction_count(account_address),
             'from': account_address,
-            'maxFeePerGas': 0,
-            'maxPriorityFeePerGas': 0,
-            'gas': 0
+            "gasPrice": web3.eth.gas_price,
         })
     elif contract.address == web3.to_checksum_address('0x4C0926FF5252A435FD19e10ED15e5a249Ba19d79'):
         tx = contract.functions.withdrawETH(
@@ -38,8 +40,7 @@ def create_bridge_tx(contract: Contract, amount: int, web3: Web3, account_addres
             'value': amount,
             'nonce': web3.eth.get_transaction_count(account_address),
             'from': account_address,
-            'gasPrice': 0,
-            'gas': 0
+            "gasPrice": web3.eth.gas_price,
         })
     else:
         logger.error(f'Unknown error')
@@ -74,17 +75,10 @@ async def claim_eth(tx_hash: str, private_key: str) -> None:
         'value': 0,
         'nonce': web3.eth.get_transaction_count(account_address),
         'from': account_address,
-        'maxFeePerGas': 0,
-        'maxPriorityFeePerGas': 0,
-        'gas': 0
+        "gasPrice": web3.eth.gas_price,
     })
     while True:
         try:
-            tx.update({'maxFeePerGas': int(web3.eth.gas_price * 1.1)})
-            tx.update({'maxPriorityFeePerGas': web3.eth.gas_price})
-            gas_limit = web3.eth.estimate_gas(tx)
-            tx.update({'gas': gas_limit})
-
             signed_tx = web3.eth.account.sign_transaction(tx, private_key)
             raw_tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
             tx_hash = web3.to_hex(raw_tx_hash)

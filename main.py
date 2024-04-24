@@ -39,6 +39,8 @@ async def main() -> None:
 
         if RANDOMIZE:
             random.shuffle(patterns)
+        lendings = [['layerbank_deposit', 'layerbank_withdraw'], ['aave_deposit', 'aave_withdraw']]
+
         bridge_patterns = ['main_bridge', 'orbiter_bridge', 'owl_bridge']
         deposit_bridges = []
         withdraw_bridges = []
@@ -63,6 +65,14 @@ async def main() -> None:
         if 'swap_all_to_eth' in patterns:
             patterns.remove('swap_all_to_eth')
             patterns.append('swap_all_to_eth')
+        for lending in lendings:
+            if lending[0] in patterns:
+                patterns.remove(lending[0])
+                patterns.append(lending[0])
+            if lending[1] in patterns:
+                patterns.remove(lending[1])
+                patterns.append(lending[1])
+
         if withdraw_bridges:
             random_withdraw_bridge = random.choice(withdraw_bridges)
             patterns.remove(random_withdraw_bridge)
@@ -80,9 +90,9 @@ async def main() -> None:
             task = create_task(process_task(private_key, pattern))
             tasks.append(task)
 
+            await task
             time_to_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
             logger.info(f'Sleeping {time_to_sleep} seconds...')
-            await task
             await sleep(time_to_sleep)
 
     await gather(*tasks)

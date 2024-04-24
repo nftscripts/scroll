@@ -3,12 +3,21 @@ import random
 
 from loguru import logger
 
+from src.modules.nft.scrollcitizen.scrollcitizen import ScrollCitizen
 from src.modules.bridges.orbiter.oribter_bridge import OrbiterBridge
 from src.modules.bridges.main_bridge.main_bridge import MainBridge
 from src.modules.bridges.owlto.owlto_bridge import OwlBridge
 from src.modules.swaps.wrapper.eth_wrapper import Wrapper
 from src.modules.deploy.contract_deployer import Deployer
+from src.modules.bridges.chainge.chainge import Chainge
+from src.modules.nft.omnisea.omnisea import Omnisea
+from src.modules.nft.zkstars.zkstars import ZKStars
+from src.modules.other.rubyscore import RubyScore
 from src.modules.nft.zerius.zerius import Zerius
+from src.modules.nft.l2pass.l2pass import L2Pass
+from src.modules.lendings.aave.aave import Aave
+from src.modules.swaps.zebra.zebra import ZebraSwap
+from src.utils.data.contracts import contracts
 from src.utils.user.account import Account
 from src.modules.dmail.dmail import Dmail
 from config import *
@@ -112,6 +121,23 @@ async def process_main_bridge(private_key: str) -> None:
     await main_bridge.bridge()
 
 
+async def process_chainge_bridge(private_key: str) -> None:
+    amount = ChaingeBridgeConfig.amount
+    use_percentage = ChaingeBridgeConfig.use_percentage
+    bridge_percentage = ChaingeBridgeConfig.bridge_percentage
+    bridge_all_balance = ChaingeBridgeConfig.bridge_all_balance
+
+    chainge = Chainge(
+        private_key=private_key,
+        amount=amount,
+        use_percentage=use_percentage,
+        bridge_percentage=bridge_percentage,
+        bridge_all_balance=bridge_all_balance
+    )
+    logger.info(chainge)
+    await chainge.bridge()
+
+
 async def process_owl_bridge(private_key: str) -> None:
     from_chain = OwlBridgeConfig.from_chain
     to_chain = OwlBridgeConfig.to_chain
@@ -158,21 +184,42 @@ async def process_swap_all_to_eth(private_key: str) -> None:
     use_percentage = False
     swap_percentage = 0
     swap_all_balance = True
-    swap_list = [SkyDromeSwap, PunkSwap, SyncSwapSwap, SpaceFiSwap]
+    swap_list = [SkyDromeSwap, PunkSwap, SyncSwapSwap, SpaceFiSwap, ZebraSwap]
     for token in tokens_list:
-        swap_class = random.choice(swap_list)
-        swap_all_tokens_swap = swap_class(private_key=private_key,
-                                          from_token=token,
-                                          to_token=to_token,
-                                          amount=amount,
-                                          use_percentage=use_percentage,
-                                          swap_percentage=swap_percentage,
-                                          swap_all_balance=swap_all_balance)
-        logger.info(swap_all_tokens_swap)
-        await swap_all_tokens_swap.swap()
-        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
-        logger.info(f'Sleeping {random_sleep} seconds...')
-        await sleep(random_sleep)
+        if token.lower() == 'weth':
+            unwrapper = Wrapper(
+                private_key=private_key,
+                action='unwrap',
+                amount=0.01,
+                use_all_balance=swap_all_balance,
+                use_percentage=False,
+                percentage_to_wrap=0.01
+            )
+            logger.info(unwrapper)
+            await unwrapper.wrap()
+            continue
+        while True:
+            swap_class = random.choice(swap_list)
+            swap_all_tokens_swap = swap_class(private_key=private_key,
+                                              from_token=token,
+                                              to_token=to_token,
+                                              amount=amount,
+                                              use_percentage=use_percentage,
+                                              swap_percentage=swap_percentage,
+                                              swap_all_balance=swap_all_balance)
+            logger.info(swap_all_tokens_swap)
+            swap = await swap_all_tokens_swap.swap()
+            if swap is True:
+                random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+                logger.info(f'Sleeping {random_sleep} seconds...')
+                await sleep(random_sleep)
+                break
+            if swap == 'ZeroBalance':
+                await sleep(10)
+                break
+            else:
+                await sleep(10)
+                continue
 
 
 async def process_random_dex_swap(private_key: str) -> None:
@@ -180,7 +227,7 @@ async def process_random_dex_swap(private_key: str) -> None:
     to_token = RandomDexSwapConfig.to_token
     amount = RandomDexSwapConfig.amount
     num_swaps = RandomDexSwapConfig.num_swaps
-    swap_list = [SyncSwapSwap, PunkSwap, SkyDromeSwap, SpaceFiSwap]
+    swap_list = [SyncSwapSwap, PunkSwap, SkyDromeSwap, SpaceFiSwap, ZebraSwap]
     for _ in range(num_swaps):
         swap_class = random.choice(swap_list)
         random_dex_swap = swap_class(private_key=private_key,
@@ -207,6 +254,27 @@ async def process_skydrome_swap(private_key: str) -> None:
     swap_all_balance = SkyDromeSwapConfig.swap_all_balance
 
     swap = SkyDromeSwap(
+        private_key=private_key,
+        from_token=from_token,
+        to_token=to_token,
+        amount=amount,
+        use_percentage=use_percentage,
+        swap_percentage=swap_percentage,
+        swap_all_balance=swap_all_balance
+    )
+    logger.info(swap)
+    await swap.swap()
+
+
+async def process_zebra_swap(private_key: str) -> None:
+    from_token = ZebraSwapConfig.from_token
+    to_token = ZebraSwapConfig.to_token
+    amount = ZebraSwapConfig.amount
+    use_percentage = ZebraSwapConfig.use_percentage
+    swap_percentage = ZebraSwapConfig.swap_percentage
+    swap_all_balance = ZebraSwapConfig.swap_all_balance
+
+    swap = ZebraSwap(
         private_key=private_key,
         from_token=from_token,
         to_token=to_token,
@@ -496,3 +564,103 @@ async def process_layerbank_withdraw(private_key: str) -> None:
     logger.info(lending)
 
     await lending.withdraw()
+
+
+async def process_deposit_aave(private_key: str) -> None:
+    amount = AaveDepositConfig.amount
+    use_percentage = AaveDepositConfig.use_percentage
+    deposit_percentage = AaveDepositConfig.percentage
+    aave = Aave(
+        private_key=private_key,
+        amount=amount,
+        use_percentage=use_percentage,
+        deposit_percentage=deposit_percentage,
+        remove_percentage=0.01,
+        remove_all=False
+    )
+    await aave.deposit()
+
+
+async def process_withdraw_aave(private_key: str) -> None:
+    amount = AaveWithdrawConfig.amount
+    use_percentage = AaveWithdrawConfig.use_percentage
+    remove_percentage = AaveWithdrawConfig.percentage
+    remove_all = AaveWithdrawConfig.withdraw_all
+    aave = Aave(
+        private_key=private_key,
+        amount=amount,
+        use_percentage=use_percentage,
+        deposit_percentage=0.01,
+        remove_percentage=remove_percentage,
+        remove_all=remove_all
+    )
+    await aave.withdraw()
+
+
+async def process_l2pass_mint(private_key: str) -> None:
+    l2pass = L2Pass(private_key=private_key)
+    logger.info(l2pass)
+    await l2pass.mint()
+
+
+async def process_omnisea_create(private_key: str) -> None:
+    omnisea = Omnisea(private_key=private_key)
+    logger.info(omnisea)
+    await omnisea.create()
+
+
+async def process_rubyscore_voting(private_key: str) -> None:
+    rubyscore = RubyScore(private_key=private_key)
+    logger.info(rubyscore)
+    await rubyscore.vote()
+
+
+async def process_scroll_citizen_mint(private_key: str) -> None:
+    mint_all = ScrollCitizenMintConfig.mint_all
+    quantity = ScrollCitizenMintConfig.quantity
+    if isinstance(quantity, list):
+        quantity = random.randint(quantity[0], quantity[1])
+    elif isinstance(quantity, int):
+        quantity = quantity
+    else:
+        logger.error(f'quantity must be int or list[int]. Got {type(quantity)}')
+        return
+
+    mint_contracts = contracts['scroll_citizen'] if mint_all is True else random.sample(contracts['scroll_citizen'],
+                                                                                        quantity)
+    random.shuffle(mint_contracts)
+    for contract in mint_contracts:
+        scroll_citizen = ScrollCitizen(
+            private_key=private_key,
+            contract_address=contract
+        )
+        logger.info(scroll_citizen)
+        await scroll_citizen.mint()
+        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+        logger.info(f'Sleeping {random_sleep} seconds...')
+        await sleep(random_sleep)
+
+
+async def process_zkstars_mint(private_key: str) -> None:
+    mint_all = ZkStarsMintConfig.mint_all
+    quantity = ZkStarsMintConfig.quantity
+    if isinstance(quantity, list):
+        quantity = random.randint(quantity[0], quantity[1])
+    elif isinstance(quantity, int):
+        quantity = quantity
+    else:
+        logger.error(f'quantity must be int or list[int]. Got {type(quantity)}')
+        return
+
+    mint_contracts = contracts['zk_stars'] if mint_all is True else random.sample(contracts['zk_stars'], quantity)
+    random.shuffle(mint_contracts)
+    for contract in mint_contracts:
+        zk_stars = ZKStars(
+            private_key=private_key,
+            contract_address=contract
+        )
+        logger.info(zk_stars)
+        await zk_stars.mint()
+        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+        logger.info(f'Sleeping {random_sleep} seconds...')
+        await sleep(random_sleep)

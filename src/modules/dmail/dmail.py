@@ -45,6 +45,6 @@ class Dmail(Account):
         tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
-        self.logger.success(f'Successfully sent mail | TX: https://blockscout.scroll.io/tx/{tx_hash}')
+        self.wait_until_tx_finished(tx_hash)
         if USE_DATABASE:
             await self.db_utils.add_to_db(self.account_address, tx_hash, 'Dmail')

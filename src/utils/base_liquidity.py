@@ -91,10 +91,6 @@ class BaseLiquidity(ABC, Account):
         tx = self.create_liquidity_tx(self.token, contract, amount_out, from_token_address, to_token_address,
                                       self.account_address, amount, self.web3)
 
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
-
         tx_hash = self.sign_transaction(tx)
 
         self.logger.success(

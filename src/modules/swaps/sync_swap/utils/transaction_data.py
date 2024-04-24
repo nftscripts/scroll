@@ -78,8 +78,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
         'from': account_address,
         'value': amount if from_token.lower() == 'eth' else 0,
         'nonce': web3.eth.get_transaction_count(account_address),
-        'gasPrice': 0,
-        'gas': 0
+        'gasPrice': web3.eth.gas_price,
     })
     return tx
 
@@ -112,8 +111,7 @@ def create_liquidity_tx(from_token: str, contract: Contract, to_token_address: s
         'from': account_address,
         'value': amount if from_token.lower() == 'eth' else 0,
         'nonce': web3.eth.get_transaction_count(account_address),
-        'gasPrice': 0,
-        'gas': 0
+        'gasPrice': web3.eth.gas_price,
     })
     return tx
 
@@ -140,7 +138,6 @@ def create_liquidity_remove_tx(web3: Web3, contract: Contract, from_token_pair_a
     ).build_transaction({
         'from': account_address,
         'nonce': web3.eth.get_transaction_count(account_address),
-        'gasPrice': 0,
-        'gas': 0
+        'gasPrice': web3.eth.gas_price,
     })
     return tx

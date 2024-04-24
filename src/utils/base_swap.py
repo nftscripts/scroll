@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Union, List
+from typing import Union, List, Optional
 import random
 
 from web3.contract import Contract
@@ -48,7 +48,7 @@ class BaseSwap(ABC, Account):
             self.logger.warning('You set use_percentage and swap_all_balance both True. Using swap_percentage.')
 
     @retry()
-    async def swap(self) -> None:
+    async def swap(self) -> Optional[Union[bool, str]]:
         from_token_address, to_token_address = tokens[self.from_token.upper()], tokens[self.to_token.upper()]
         contract = self.load_contract(self.contract_address, self.web3, self.abi_name)
         balance = self.get_wallet_balance(self.from_token, from_token_address)
@@ -56,7 +56,7 @@ class BaseSwap(ABC, Account):
 
         if balance == 0:
             self.logger.error(f'🅾️ | Your balance is 0 | {self.account_address}')
-            return
+            return 'ZeroBalance'
 
         if self.swap_all_balance is True and self.from_token.lower() == 'eth':
             self.logger.error(
@@ -81,28 +81,36 @@ class BaseSwap(ABC, Account):
         tx = self.create_swap_tx(self.from_token, self.to_token, contract, amount_out, from_token_address,
                                  to_token_address, self.account_address, amount, self.web3)
 
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
+        if tx is None:
+            return
 
-        tx_hash = self.sign_transaction(tx)
+        try:
+            tx_hash = self.sign_transaction(tx)
+            confirmed = self.wait_until_tx_finished(tx_hash)
+        except Exception as ex:
+            self.logger.error(f'Something went wrong {ex}')
+            return False
 
-        self.logger.success(
-            f'Successfully swapped {"all" if self.swap_all_balance is True and self.from_token.lower() != "eth" and self.use_percentage is False else f"{int(self.swap_percentage * 100)}%" if self.use_percentage is True else self.amount} {self.from_token} tokens => {self.to_token} | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-        )
+        if confirmed:
+            self.logger.success(
+                f'Successfully swapped {"all" if self.swap_all_balance is True and self.from_token.lower() != "eth" and self.use_percentage is False else f"{int(self.swap_percentage * 100)}%" if self.use_percentage is True else self.amount} {self.from_token} tokens => {self.to_token} | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+            )
 
-        if USE_DATABASE:
-            if self.from_token.lower() == 'eth':
-                value_amount = self.amount
-            elif self.to_token.lower() == 'eth':
-                value_amount = amount_out * 1e-18
-            else:
-                value_amount = self.get_amount_out(contract, amount, Web3.to_checksum_address(from_token_address),
-                                                   Web3.to_checksum_address(
-                                                       '0x5300000000000000000000000000000000000004')) * 1e-18
+            if USE_DATABASE:
+                if self.from_token.lower() == 'eth':
+                    value_amount = self.amount
+                elif self.to_token.lower() == 'eth':
+                    value_amount = amount_out * 1e-18
+                else:
+                    value_amount = self.get_amount_out(contract, amount, Web3.to_checksum_address(from_token_address),
+                                                       Web3.to_checksum_address(
+                                                           '0x5300000000000000000000000000000000000004')) * 1e-18
 
-            await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
-                                          self.dex_name, value_amount, self.from_token, self.to_token)
+                await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
+                                              self.dex_name, value_amount, self.from_token, self.to_token)
+            return True
+        else:
+            return False
 
     @abstractmethod
     def get_amount_out(self, contract: Contract, amount: int, from_token_address: Address,

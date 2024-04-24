@@ -77,15 +77,9 @@ class BaseBridge(ABC, Account):
             return
 
         tx = self.create_bridge_tx(contract, amount, self.web3, self.account_address)
-
-        if self.from_chain == 'SCROLL':
-            tx.update({'gasPrice': self.web3.eth.gas_price})
-        else:
-            tx.update({'maxFeePerGas': int(self.web3.eth.gas_price * 1.1)})
-            tx.update({'maxPriorityFeePerGas': self.web3.eth.gas_price})
-
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
+        if self.dex_name == 'Orbiter' or self.dex_name == 'Owlto':
+            gas_limit = self.web3.eth.estimate_gas(tx)
+            tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
         self.logger.success(

@@ -4,16 +4,21 @@ MIN_PAUSE = 10
 MAX_PAUSE = 20
 RETRIES = 3
 PAUSE_BETWEEN_RETRIES = 1
-CHECK_GWEI = True
+CHECK_GWEI = False
 MAX_GWEI = 25
-USE_DATABASE = True
+USE_DATABASE = False
 
 deploy_contract = False
 
-dmail = False
+dmail = True
+rubyscore = False
 
+# --- Lendings --- #
 layerbank_deposit = False
 layerbank_withdraw = False
+aave_deposit = False
+aave_withdraw = False
+
 
 # --- Bridges --- #
 main_bridge = False
@@ -23,6 +28,7 @@ orbiter_bridge = False
 # --- Swaps --- #
 skydrome_swap = False
 punk_swap = False
+zebra_swap = False
 syncswap_swap = False
 specefi_swap = False
 wrapper = False
@@ -45,6 +51,10 @@ skydrome_liquidity_remove = False
 
 # --- NFT --- #
 zerius = False
+l2pass = False
+omnisea = False
+scroll_citizen = False
+zk_stars = False
 
 # --- Withdrawals --- #
 okx_withdraw = False  # from okx to wallets
@@ -158,7 +168,16 @@ class SkyDromeSwapConfig:
     amount = 0.0024
     use_percentage = False
     swap_percentage = 0.5
-    swap_all_balance = False
+    swap_all_balance = True
+
+
+class ZebraSwapConfig:
+    from_token = 'USDT'
+    to_token = 'ETH'
+    amount = 0.0024
+    use_percentage = False
+    swap_percentage = [0.1, 0.2]
+    swap_all_balance = True
 
 
 class SpaceFiSwapConfig:
@@ -279,9 +298,9 @@ class LayerBankDepositConfig:
     """
 
     amount = [0.0005, 0.001]
-    use_percentage = False
-    percentage = 0.01
-    only_collateral = True
+    use_percentage = True
+    percentage = [0.85, 0.9]
+    only_collateral = False
 
 
 class LayerBankWithdrawConfig:
@@ -289,3 +308,26 @@ class LayerBankWithdrawConfig:
     withdraw_all = True
     use_percentage = False
     percentage = 0.01
+
+
+class AaveDepositConfig:
+    amount = [0.001, 0.002]
+    use_percentage = True
+    percentage = [0.1, 0.2]
+
+
+class AaveWithdrawConfig:
+    amount = [0.001, 0.002]
+    withdraw_all = True
+    use_percentage = False
+    percentage = [0.1, 0.2]
+
+
+class ScrollCitizenMintConfig:
+    mint_all = False
+    quantity = [1, 2]
+
+
+class ZkStarsMintConfig:
+    mint_all = False
+    quantity = [1, 2]

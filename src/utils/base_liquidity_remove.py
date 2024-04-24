@@ -59,10 +59,6 @@ class BaseLiquidityRemove(ABC, Account):
         tx = self.create_liquidity_remove_tx(self.web3, contract, tokens[self.from_token_pair.upper()],
                                              amount, self.account_address, token=self.token)
 
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
-
         tx_hash = self.sign_transaction(tx)
 
         logger.success(

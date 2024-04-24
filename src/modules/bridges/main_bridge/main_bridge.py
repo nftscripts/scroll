@@ -18,7 +18,7 @@ class MainBridge(BaseBridge):
         dex_name = 'MainBridge'
         if action.lower() == 'deposit':
             rpc = ETH.rpc
-            contract_address = '0xF8B1378579659D8F7EE5f3C929c2f3E332E41Fd6'
+            contract_address = '0x6774bcbd5cecef1336b5300fb5186a12ddd8b367'
             abi_name = 'main_bridge'
             scan = chain_mapping['eth'].scan
             from_chain = 'ETH'

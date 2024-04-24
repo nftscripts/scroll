@@ -14,16 +14,14 @@ def create_wrap_tx(account_address: Address, from_token: str, web3: Web3, amount
             'value': amount,
             'nonce': web3.eth.get_transaction_count(account_address),
             'from': account_address,
-            'gasPrice': 0,
-            'gas': 0
+            'gasPrice': web3.eth.gas_price,
         })
     else:
         tx = contract.functions.withdraw(amount).build_transaction({
             'value': 0,
             'nonce': web3.eth.get_transaction_count(account_address),
             'from': account_address,
-            'gasPrice': 0,
-            'gas': 0
+            'gasPrice': web3.eth.gas_price,
         })
 
     return tx

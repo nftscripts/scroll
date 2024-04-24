@@ -2,9 +2,61 @@ contracts = {
     'skydrome': '0xAA111C62cDEEf205f70E6722D1E22274274ec12F',
     'punkswap': '0x26cB8660EeFCB2F7652e7796ed713c9fB8373f8e',
     'spacefi': '0x18b71386418A9FCa5Ae7165E31c385a5130011b6',
+    'zebra': '0x0122960d6e391478bfe8fb2408ba412d5600f621',
     'syncswap': '0x80e38291e06339d10AAB483C65695D004dBD5C69',
     'dmail': '0x47fbe95e981c0df9737b6971b451fb15fdc989d9',
-    'layerbank': '0xec53c830f4444a8a56455c6836b5d2aa794289aa'
+    'layerbank': '0xec53c830f4444a8a56455c6836b5d2aa794289aa',
+    'aave': {
+        'aave_contract': '0xff75a4b698e3ec95e608ac0f22a03b8368e05f5d',
+        'aave_weth': '0xf301805be1df81102c957f6d4ce29d2b8c056b2a'
+    },
+    'l2pass': '0x0000049f63ef0d60abe49fdd8bebfa5a68822222',
+    'omnisea': '0x46ce46951d12710d85bc4fe10bb29c6ea5012077',
+    'rubyscore': '0xe10Add2ad591A7AC3CA46788a06290De017b9fB4',
+    'scroll_citizen': [
+        "0xc519d9d47c003b6274e20cfe21d58fee1efa7a0e",
+        "0x1249e38bb84aa3cbe6f4506a85b6831ef49ed48f",
+        "0xcde5e31d0c7348161b76579a6e25b8874de91434",
+        "0xd4eac5a09e5e8ac8e94f62e46b5d9e808e577d2e",
+        "0x51c8b85aedb821712c7115f36d252018951c4b16",
+        "0x6982d37e2bc0de66ce744a65a79c57926f11a947",
+        "0xf4647c674e32506809f77cf3236ed8034e817cc9",
+        "0x6b4772a613a63cbdb15c767bd604e9f5ecf60fcd",
+        "0x4395df30ef87a2c23ab393fe0bf1f2d2ef6eefc1",
+        "0x36c9724d98dc3f46676bf213da318e556bcc3d16",
+        "0x80151e432f5c6d6c89427bceee6738bcc61e3fa6",
+        "0xd4215d6aff866151c2df3ebed8ff0cc084b7d2cf",
+        "0xde2fea1c76d1d08b0055b8ae6bc4ce8a31403192",
+        "0xbdb2cd55421ecd520a04be90b6dee93689a203de",
+        "0x65665e3275e2a122c61f953929ca13c1bb5a593b",
+        "0x07e2f41b117b34dda4c7044242e903053a7ea025",
+        "0x6de8a54d6771325e53e53e85aaf614392839caff",
+        "0x9efd036f4f30d9802d4dc1b7ece292d2ef896883",
+        "0x57324f9d28d0b89ec980b0b0c6a432c761faf6b2",
+        "0x2ab5a55aac0df0087fb2b352372fe19e84f46041"
+    ],
+    'zk_stars': [
+        "0x609c2f307940b8f52190b6d3d3a41c762136884e",
+        "0x16c0baa8a2aa77fab8d0aece9b6947ee1b74b943",
+        "0xc5471e35533e887f59df7a31f7c162eb98f367f7",
+        "0xf861f5927c87bc7c4781817b08151d638de41036",
+        "0x954e8ac11c369ef69636239803a36146bf85e61b",
+        "0xa576ac0a158ebdcc0445e3465adf50e93dd2cad8",
+        "0x17863384c663c5f95e4e52d3601f2ff1919ac1aa",
+        "0x4c2656a6d1c0ecac86f5024e60d4f04dbb3d1623",
+        "0x4e86532cedf07c7946e238bd32ba141b4ed10c12",
+        "0x6b9db0ffcb840c3d9119b4ff00f0795602c96086",
+        "0x10d4749bee6a1576ae5e11227bc7f5031ad351e4",
+        "0x373148e566e4c4c14f4ed8334aba3a0da645097a",
+        "0xdacbac1c25d63b4b2b8bfdbf21c383e3ccff2281",
+        "0x2394b22b3925342f3216360b7b8f43402e6a150b",
+        "0xf34f431e3fc0ad0d2beb914637b39f1ecf46c1ee",
+        "0x6f1e292302dce99e2a4681be4370d349850ac7c2",
+        "0xa21fac8b389f1f3717957a6bb7d5ae658122fc82",
+        "0x1b499d45e0cc5e5198b8a440f2d949f70e207a5d",
+        "0xec9bef17876d67de1f2ec69f9a0e94de647fcc93",
+        "0x5e6c493da06221fed0259a49beac09ef750c3de1"
+    ]
 }
 
 abi_names = {
@@ -14,4 +66,11 @@ abi_names = {
     'spacefi': 'spacefi',
     'dmail': 'dmail',
     'layerbank': 'layerbank',
+    'aave': 'aave_abi',
+    'l2pass': 'l2pass_abi',
+    'omnisea': 'omnisea_abi',
+    'rubyscore': 'rubyscore_abi',
+    'scroll_citizen': 'scroll_citizen_abi',
+    'zkstars': 'zkstars_abi',
+    'zebra': 'zebra_abi'
 }

@@ -25,5 +25,14 @@ module_handlers = {
     'zerius': process_zerius_mint_bridge,
     'deploy_contract': process_deploy,
     'layerbank_deposit': process_layerbank_deposit,
-    'layerbank_withdraw': process_layerbank_withdraw
+    'layerbank_withdraw': process_layerbank_withdraw,
+    'chainge_bridge': process_chainge_bridge,
+    'aave_deposit': process_deposit_aave,
+    'aave_withdraw': process_withdraw_aave,
+    'l2pass': process_l2pass_mint,
+    'omnisea': process_omnisea_create,
+    'rubyscore': process_rubyscore_voting,
+    'scroll_citizen': process_scroll_citizen_mint,
+    'zk_stars': process_zkstars_mint,
+    'zebra_swap': process_zebra_swap
 }

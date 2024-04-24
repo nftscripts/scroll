@@ -43,7 +43,7 @@ class SpaceFiSwap(BaseSwap):
     def create_swap_tx(self, from_token: str, to_token: str, contract: Contract, amount_out: int,
                        from_token_address: str, to_token_address: str, account_address: Address, amount: int,
                        web3: Web3) -> Types.SwapTransaction:
-        return create_swap_tx(from_token, to_token, contract, amount_out, from_token_address, to_token_address,
+        return create_swap_tx(from_token, contract, amount_out, from_token_address, to_token_address,
                               account_address, amount, web3)
 
 

@@ -1,7 +1,7 @@
 aiohttp==3.9.2
 ccxt==4.1.16
 colorama==0.4.6
-eth_abi==4.2.1
+eth_abi==5.0.1
 eth_typing==3.5.0
 hexbytes==0.3.1
 loguru==0.7.2

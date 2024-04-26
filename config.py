@@ -10,8 +10,11 @@ USE_DATABASE = False
 
 deploy_contract = False
 
-dmail = True
+
+# --- Other --- #
+dmail = False
 rubyscore = False
+multi_approve = True
 
 # --- Lendings --- #
 layerbank_deposit = False

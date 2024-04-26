@@ -44,27 +44,17 @@ class Utils:
             contract = self.load_contract(from_token_address, web3, 'erc20')
             allowance_amount = self.check_allowance(web3, from_token_address, address_wallet, spender)
 
-            if amount > allowance_amount:
+            if amount >= allowance_amount:
                 self.logger.debug('🛠️ | Approving token...')
                 tx = contract.functions.approve(
                     spender,
-                    100000000000000000000000000000000000000000000000000000000000000000000000000000
-                ).build_transaction(
-                    {
-                        'chainId': web3.eth.chain_id,
-                        'from': address_wallet,
-                        'nonce': web3.eth.get_transaction_count(address_wallet),
-                        'gasPrice': 0,
-                        'gas': 0,
-                        'value': 0
-                    }
-                )
-
-                gas_price = self.add_gas_price(web3)
-                tx['gasPrice'] = gas_price
-
-                gas_limit = self.add_gas_limit(web3, tx)
-                tx['gas'] = gas_limit
+                    int(amount * 1.5)
+                ).build_transaction({
+                    'chainId': web3.eth.chain_id,
+                    'from': address_wallet,
+                    'nonce': web3.eth.get_transaction_count(address_wallet),
+                    "gasPrice": web3.eth.gas_price,
+                })
 
                 signed_tx = web3.eth.account.sign_transaction(tx, private_key=private_key)
                 raw_tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)

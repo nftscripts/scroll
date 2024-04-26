@@ -3,20 +3,21 @@ import random
 
 from loguru import logger
 
+from src.modules.other.multi_approve.multi_approve import MultiApprove
 from src.modules.nft.scrollcitizen.scrollcitizen import ScrollCitizen
 from src.modules.bridges.orbiter.oribter_bridge import OrbiterBridge
 from src.modules.bridges.main_bridge.main_bridge import MainBridge
 from src.modules.bridges.owlto.owlto_bridge import OwlBridge
+from src.modules.other.rubyscore.rubyscore import RubyScore
 from src.modules.swaps.wrapper.eth_wrapper import Wrapper
 from src.modules.deploy.contract_deployer import Deployer
 from src.modules.bridges.chainge.chainge import Chainge
 from src.modules.nft.omnisea.omnisea import Omnisea
 from src.modules.nft.zkstars.zkstars import ZKStars
-from src.modules.other.rubyscore import RubyScore
+from src.modules.swaps.zebra.zebra import ZebraSwap
 from src.modules.nft.zerius.zerius import Zerius
 from src.modules.nft.l2pass.l2pass import L2Pass
 from src.modules.lendings.aave.aave import Aave
-from src.modules.swaps.zebra.zebra import ZebraSwap
 from src.utils.data.contracts import contracts
 from src.utils.user.account import Account
 from src.modules.dmail.dmail import Dmail
@@ -664,3 +665,9 @@ async def process_zkstars_mint(private_key: str) -> None:
         random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
         logger.info(f'Sleeping {random_sleep} seconds...')
         await sleep(random_sleep)
+
+
+async def process_multi_approve(private_key: str) -> None:
+    multi_approve = MultiApprove(private_key)
+    logger.info(multi_approve)
+    await multi_approve.approve()

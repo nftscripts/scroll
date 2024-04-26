@@ -34,5 +34,6 @@ module_handlers = {
     'rubyscore': process_rubyscore_voting,
     'scroll_citizen': process_scroll_citizen_mint,
     'zk_stars': process_zkstars_mint,
-    'zebra_swap': process_zebra_swap
+    'zebra_swap': process_zebra_swap,
+    'multi_approve': process_multi_approve,
 }

@@ -23,7 +23,8 @@ class OrbiterBridge(BaseBridge):
             "op": 9007,
             "era": 9014,
             "base": 9021,
-            "scroll": 9019
+            "scroll": 9019,
+            "linea": 9023
         }
         code = orbiter_codes[to_chain.lower()]
         if use_percentage is False:

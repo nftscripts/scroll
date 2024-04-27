@@ -22,16 +22,18 @@ class MainBridge(BaseBridge):
             abi_name = 'main_bridge'
             scan = chain_mapping['eth'].scan
             from_chain = 'ETH'
+            to_chain = 'SCROLL'
         elif action.lower() == 'withdraw':
             rpc = SCROLL.rpc
             contract_address = '0x4C0926FF5252A435FD19e10ED15e5a249Ba19d79'
             abi_name = 'main_bridge_scroll'
             scan = chain_mapping['scroll'].scan
             from_chain = 'SCROLL'
+            to_chain = 'ETH'
         else:
             raise ValueError(f'Action must be deposit/withdraw only. Got {action}.')
         super().__init__(private_key, amount, use_percentage, bridge_percentage, contract_address, abi_name, dex_name,
-                         rpc, scan, from_chain, claim_eth=claim_eth)
+                         rpc, scan, from_chain, to_chain, claim_eth=claim_eth)
 
     def __repr__(self) -> str:
         return f'Ⓜ️ | {self.__class__.__name__}: {self.account_address}'

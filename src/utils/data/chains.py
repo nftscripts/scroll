@@ -35,10 +35,33 @@ SCROLL = Chain(
     scan='https://blockscout.scroll.io/tx'
 )
 
+OP = Chain(
+    chain_id=10,
+    rpc='https://optimism.blockpi.network/v1/rpc/public',
+    scan='https://optimistic.etherscan.io/tx'
+)
+
+LINEA = Chain(
+    chain_id=59144,
+    rpc='https://linea.blockpi.network/v1/rpc/public',
+    scan='https://lineascan.build/tx'
+)
+
 chain_mapping = {
     'base': BASE,
     'eth': ETH,
     'era': ERA,
     'arb': ARB,
-    'scroll': SCROLL
+    'scroll': SCROLL,
+    'op': OP,
+    'linea': LINEA
+}
+
+okx_chain_mapping = {
+    'ERC-20': ETH,
+    'Arbitrum One': ARB,
+    'Optimism': OP,
+    'zkSync Era': ERA,
+    'Base': BASE,
+    'Linea': LINEA
 }

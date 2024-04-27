@@ -73,7 +73,7 @@ class OkxWithdrawConfig:
     """
 
     amount = [0.001, 0.002]
-    chain = 'ERC20'
+    chain = 'ERC-20'
 
 
 class WithdrawFromWalletsToOKXConfig:

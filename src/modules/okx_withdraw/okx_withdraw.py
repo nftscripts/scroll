@@ -8,10 +8,18 @@ import ccxt
 
 from src.modules.okx_withdraw.utils.okx_sub_transfer import transfer_from_subaccs_to_main
 from src.modules.okx_withdraw.utils.data import get_withdrawal_fee
-from okx_data.okx_data import proxy, USE_PROXY
-from src.utils.user.account import Account
-from src.utils.data.chains import chain_mapping
 from src.utils.wrappers.decorators import retry
+from src.utils.user.account import Account
+
+from okx_data.okx_data import (
+    USE_PROXY,
+    proxy,
+)
+
+from src.utils.data.chains import (
+    okx_chain_mapping,
+    chain_mapping,
+)
 
 
 class OkxWithdraw:
@@ -30,7 +38,8 @@ class OkxWithdraw:
 
         self.receiver_address = receiver_address
         self.chain = chain
-
+        rpc = okx_chain_mapping[chain].rpc
+        self.web3 = Web3(Web3.HTTPProvider(rpc))
         self.okex = ccxt.okx({
             'apiKey': self.api_key,
             'secret': self.api_secret,
@@ -49,7 +58,8 @@ class OkxWithdraw:
         try:
             chain_name = 'ETH' + '-' + self.chain
             fee = await get_withdrawal_fee('ETH', chain_name, self.okex)
-
+            eth_balance_before_withdraw = self.web3.eth.get_balance(
+                self.web3.to_checksum_address(self.receiver_address))
             self.okex.withdraw('ETH', self.amount, self.receiver_address, params={
                 'toAddress': self.receiver_address,
                 'chainName': chain_name,
@@ -62,10 +72,26 @@ class OkxWithdraw:
 
             logger.success(
                 f'Successfully withdrawn {self.amount} ETH to {self.chain} for wallet {self.receiver_address}')
+            await self.wait_for_eth(eth_balance_before_withdraw)
 
         except Exception as ex:
             logger.error(f'Something went wrong {ex}')
             return
+
+    async def wait_for_eth(self, eth_balance_before_withdraw: int) -> None:
+        logger.info(f'Waiting for ETH to arrive on Metamask...')
+        while True:
+            try:
+                balance = self.web3.eth.get_balance(
+                    self.web3.to_checksum_address(self.receiver_address))
+                if balance > eth_balance_before_withdraw:
+                    logger.success(f'ETH has arrived | [{self.receiver_address}]')
+                    break
+                await sleep(20)
+            except Exception as ex:
+                logger.error(f'Something went wrong {ex}')
+                await sleep(10)
+                continue
 
 
 class OkxDeposit(Account):
@@ -108,30 +134,11 @@ class OkxDeposit(Account):
         tx = {
             'chainId': self.web3.eth.chain_id,
             'from': self.account_address,
-            'to': Web3.to_checksum_address(self.receiver_address),
+            'to': self.web3.to_checksum_address(self.receiver_address),
             'value': amount,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
-            'maxPriorityFeePerGas': 0,
-            'maxFeePerGas': 0,
-            'gasPrice': 0,
-            'gas': 0,
+            'gasPrice': self.web3.eth.gas_price
         }
-        if self.from_chain.lower() == 'scroll':
-            tx.pop('maxPriorityFeePerGas')
-            tx.pop('maxFeePerGas')
-        else:
-            tx.pop('gasPrice')
-
-        if self.from_chain.lower() != 'scroll':
-            tx.update({'maxFeePerGas': 0})
-            tx.update({'maxPriorityFeePerGas': 0})
-
-        if self.from_chain.lower() == 'scroll':
-            tx.update({'gasPrice': self.web3.eth.gas_price})
-        else:
-            tx.update({'maxFeePerGas': self.web3.eth.gas_price})
-            tx.update({'maxPriorityFeePerGas': self.web3.eth.gas_price})
-
         gas_limit = self.web3.eth.estimate_gas(tx)
         tx.update({'gas': gas_limit})
 
@@ -141,6 +148,6 @@ class OkxDeposit(Account):
             f'Successfully withdrawn {round((amount / 10 ** 18), 6)} from {self.account.address} to {self.receiver_address} TX: {self.scan}/{tx_hash}'
         )
 
-        await sleep(150)
+        await sleep(300)
         logger.debug('Transferring from SubAccount to MainAccount')
         await transfer_from_subaccs_to_main()

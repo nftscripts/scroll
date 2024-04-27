@@ -1,6 +1,7 @@
 from typing import Union, List, Optional
 from abc import ABC, abstractmethod
 from fractions import Fraction
+from asyncio import sleep
 import random
 
 from web3.contract import Contract
@@ -8,6 +9,7 @@ from eth_typing import Address
 from web3 import Web3
 
 from src.modules.bridges.main_bridge.utils.transaction_data import claim_eth
+from src.utils.data.chains import chain_mapping
 from src.utils.wrappers.decorators import retry
 from src.database.utils import DataBaseUtils
 from src.utils.user.account import Account
@@ -50,7 +52,14 @@ class BaseBridge(ABC, Account):
         contract = None
         if not self.dex_name == 'Owlto' or not self.dex_name == 'Orbiter':
             contract = self.load_contract(self.contract_address, self.web3, self.abi_name)
-        balance = self.get_wallet_balance('ETH', '0x5300000000000000000000000000000000000004')
+        balance = self.get_wallet_balance('ETH', '...')
+
+        if balance == 0:
+            self.logger.error(f'🅾️ | Your balance is 0 | {self.account_address}')
+            return
+
+        to_chain_account = Account(self.private_key, chain_mapping[self.to_chain.lower()].rpc)
+        balance_before_bridge = to_chain_account.get_wallet_balance('ETH', '...')
 
         if self.use_percentage:
             amount = int(balance * self.bridge_percentage)
@@ -62,10 +71,6 @@ class BaseBridge(ABC, Account):
 
         if self.dex_name == 'Owlto' or self.dex_name == 'Orbiter':
             amount = int(str(Fraction(amount))[:-4] + str(self.code))
-
-        if balance == 0:
-            self.logger.error(f'🅾️ | Your balance is 0 | {self.account_address}')
-            return
 
         if amount > balance:
             self.logger.error(f'📉 | Not enough balance for wallet {self.account_address}')
@@ -91,6 +96,22 @@ class BaseBridge(ABC, Account):
         if self.dex_name == 'MainBridge' and self.from_chain == 'SCROLL' and self.claim_eth:
             self.logger.debug('Claiming ETH...')
             await claim_eth(tx_hash, self.private_key)
+
+        await self.wait_for_bridge(to_chain_account, balance_before_bridge)
+
+    async def wait_for_bridge(self, account: Account, balance_before_bridge: int) -> None:
+        self.logger.info(f'Waiting for ETH to arrive in {self.to_chain.upper()}...')
+        while True:
+            try:
+                balance = account.get_wallet_balance('ETH', '...')
+                if balance > balance_before_bridge:
+                    self.logger.success(f'ETH has arrived | [{self.account_address}]')
+                    break
+                await sleep(20)
+            except Exception as ex:
+                self.logger.error(f'Something went wrong {ex}')
+                await sleep(10)
+                continue
 
     @abstractmethod
     def create_bridge_tx(self, contract: Contract, amount: int, web3: Web3, account_address: Address

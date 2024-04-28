@@ -81,8 +81,7 @@ def create_liquidity_tx(from_token: str, contract: Contract, amount_out: int, to
             'value': amount if from_token.lower() == 'eth' else 0,
             'nonce': web3.eth.get_transaction_count(account_address),
             'from': account_address,
-            'gasPrice': 0,
-            'gas': 0
+            "gasPrice": web3.eth.gas_price
         })
     else:
         from_token_address = tokens[from_token]

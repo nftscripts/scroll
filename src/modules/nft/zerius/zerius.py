@@ -49,12 +49,8 @@ class Zerius(Account):
             'from': self.account_address,
             'value': mint_fee,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
-            'gasPrice': 0,
-            'gas': 0
+            "gasPrice": self.web3.eth.gas_price
         })
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
 
@@ -86,12 +82,8 @@ class Zerius(Account):
             'from': self.account_address,
             'value': l0_fee + base_bridge_fee,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
-            'gasPrice': 0,
-            'gas': 0
+            "gasPrice": self.web3.eth.gas_price
         })
-        tx.update({'gasPrice': self.web3.eth.gas_price})
-        gas_limit = self.web3.eth.estimate_gas(tx)
-        tx.update({'gas': gas_limit})
 
         tx_hash = self.sign_transaction(tx)
         self.logger.success(

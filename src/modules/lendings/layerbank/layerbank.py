@@ -68,8 +68,7 @@ class LayerBankDeposit(Account):
                 'value': amount,
                 'nonce': self.web3.eth.get_transaction_count(self.account_address),
                 'from': self.account_address,
-                'gasPrice': 0,
-                'gas': 0
+                "gasPrice": self.web3.eth.gas_price
             })
         else:
             txs = [self.contract.functions.enterMarkets(
@@ -81,8 +80,7 @@ class LayerBankDeposit(Account):
                 'value': amount,
                 'nonce': self.web3.eth.get_transaction_count(self.account_address),
                 'from': self.account_address,
-                'gasPrice': 0,
-                'gas': 0
+                "gasPrice": self.web3.eth.gas_price
             })
 
         tx_hash = self.sign_transaction(tx)
@@ -158,8 +156,7 @@ class LayerBankWithdraw(Account):
             'value': 0,
             'nonce': self.web3.eth.get_transaction_count(self.account_address),
             'from': self.account_address,
-            'gasPrice': 0,
-            'gas': 0
+            "gasPrice": self.web3.eth.gas_price
         })
 
         tx_hash = self.sign_transaction(tx)

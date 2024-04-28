@@ -58,7 +58,7 @@ chain_mapping = {
 }
 
 okx_chain_mapping = {
-    'ERC-20': ETH,
+    'ERC20': ETH,
     'Arbitrum One': ARB,
     'Optimism': OP,
     'zkSync Era': ERA,

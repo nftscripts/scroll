@@ -26,7 +26,6 @@ module_handlers = {
     'deploy_contract': process_deploy,
     'layerbank_deposit': process_layerbank_deposit,
     'layerbank_withdraw': process_layerbank_withdraw,
-    'chainge_bridge': process_chainge_bridge,
     'aave_deposit': process_deposit_aave,
     'aave_withdraw': process_withdraw_aave,
     'l2pass': process_l2pass_mint,

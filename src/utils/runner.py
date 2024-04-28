@@ -11,7 +11,6 @@ from src.modules.bridges.owlto.owlto_bridge import OwlBridge
 from src.modules.other.rubyscore.rubyscore import RubyScore
 from src.modules.swaps.wrapper.eth_wrapper import Wrapper
 from src.modules.deploy.contract_deployer import Deployer
-from src.modules.bridges.chainge.chainge import Chainge
 from src.modules.nft.omnisea.omnisea import Omnisea
 from src.modules.nft.zkstars.zkstars import ZKStars
 from src.modules.swaps.zebra.zebra import ZebraSwap
@@ -120,23 +119,6 @@ async def process_main_bridge(private_key: str) -> None:
     )
     logger.info(main_bridge)
     await main_bridge.bridge()
-
-
-async def process_chainge_bridge(private_key: str) -> None:
-    amount = ChaingeBridgeConfig.amount
-    use_percentage = ChaingeBridgeConfig.use_percentage
-    bridge_percentage = ChaingeBridgeConfig.bridge_percentage
-    bridge_all_balance = ChaingeBridgeConfig.bridge_all_balance
-
-    chainge = Chainge(
-        private_key=private_key,
-        amount=amount,
-        use_percentage=use_percentage,
-        bridge_percentage=bridge_percentage,
-        bridge_all_balance=bridge_all_balance
-    )
-    logger.info(chainge)
-    await chainge.bridge()
 
 
 async def process_owl_bridge(private_key: str) -> None:

@@ -79,10 +79,11 @@ class Aave(Account):
         self.logger.info(f"[{self.account_address}] deposit on Aave | {amount / 10 ** 18} ETH")
 
         tx_hash = self.sign_transaction(tx)
-        self.wait_until_tx_finished(tx_hash)
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        self.logger.success(
-            f'Successfully deposited {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')
+        if confirmed:
+            self.logger.success(
+                f'Successfully deposited {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')
 
     @retry()
     async def withdraw(self) -> None:
@@ -122,6 +123,8 @@ class Aave(Account):
         })
 
         tx_hash = self.sign_transaction(tx)
-        self.wait_until_tx_finished(tx_hash)
-        self.logger.success(
-            f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')
+        confirmed = self.wait_until_tx_finished(tx_hash)
+
+        if confirmed:
+            self.logger.success(
+                f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')

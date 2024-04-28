@@ -36,14 +36,15 @@ class BaseMint(ABC, Account):
             return
 
         tx_hash = self.sign_transaction(tx)
-        self.wait_until_tx_finished(tx_hash)
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        self.logger.success(
-            f'Successfully minted NFT | TX: https://scrollscan.com/tx/{tx_hash}'
-        )
-        if USE_DATABASE:
-            await self.db_utils.add_to_db(self.account_address, f'https://scrollscan.com/tx/{tx_hash}',
-                                          self.nft_name, self.amount)
+        if confirmed:
+            self.logger.success(
+                f'Successfully minted NFT | TX: https://scrollscan.com/tx/{tx_hash}'
+            )
+            if USE_DATABASE:
+                await self.db_utils.add_to_db(self.account_address, f'https://scrollscan.com/tx/{tx_hash}',
+                                              self.nft_name, self.amount)
 
     @abstractmethod
     def create_mint_tx(self, contract: Contract) -> Types.MintTransaction:

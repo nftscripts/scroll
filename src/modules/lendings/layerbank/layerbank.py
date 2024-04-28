@@ -84,18 +84,20 @@ class LayerBankDeposit(Account):
             })
 
         tx_hash = self.sign_transaction(tx)
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        if not self.only_collateral:
-            self.logger.success(
-                f'Successfully deposited {amount / 10 ** 18} ETH | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-            )
-        else:
-            self.logger.success(
-                f'Successfully used collateral | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-            )
-        if USE_DATABASE:
-            await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
-                                          self.__class__.__name__, amount / 10 ** 18)
+        if confirmed:
+            if not self.only_collateral:
+                self.logger.success(
+                    f'Successfully deposited {amount / 10 ** 18} ETH | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+                )
+            else:
+                self.logger.success(
+                    f'Successfully used collateral | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+                )
+            if USE_DATABASE:
+                await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
+                                              self.__class__.__name__, amount / 10 ** 18)
 
 
 class LayerBankWithdraw(Account):
@@ -160,6 +162,7 @@ class LayerBankWithdraw(Account):
         })
 
         tx_hash = self.sign_transaction(tx)
+        self.wait_until_tx_finished(tx_hash)
 
         self.logger.success(
             f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://blockscout.scroll.io/tx/{tx_hash}'

@@ -53,14 +53,20 @@ class Zerius(Account):
         })
 
         tx_hash = self.sign_transaction(tx)
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        self.logger.success(
-            f'Successfully Minted NFT | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-        )
+        if confirmed:
+            self.logger.success(
+                f'Successfully Minted NFT | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+            )
         return tx_hash
 
     async def bridge(self) -> None:
         mint_hash = self.mint()
+
+        if not mint_hash:
+            return
+
         await sleep(10)
         nft_id = get_nft_id(self.web3, mint_hash)
         random_sleep = random.randint(20, 30)
@@ -86,9 +92,12 @@ class Zerius(Account):
         })
 
         tx_hash = self.sign_transaction(tx)
-        self.logger.success(
-            f'Successfully Bridged NFT into {self.chain_to_bridge} | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-        )
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        if USE_DATABASE:
-            await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}', 'Zerius')
+        if confirmed:
+            self.logger.success(
+                f'Successfully Bridged NFT into {self.chain_to_bridge} | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+            )
+
+            if USE_DATABASE:
+                await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}', 'Zerius')

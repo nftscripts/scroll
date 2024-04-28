@@ -12,7 +12,7 @@ from src.utils.user.utils import Utils
 
 
 def create_bridge_tx(contract: Contract, amount: int, web3: Web3, account_address: Address) -> TxParams:
-    if contract.address == web3.to_checksum_address('0xF8B1378579659D8F7EE5f3C929c2f3E332E41Fd6'):
+    if contract.address == web3.to_checksum_address('0x6774bcbd5cecef1336b5300fb5186a12ddd8b367'):
         utils = Utils()
         oracle_contract = utils.load_contract(
             '0x0d7E906BD9cAFa154b048cFa766Cc1E54E39AF9B',

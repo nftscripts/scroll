@@ -209,6 +209,8 @@ async def process_random_dex_swap(private_key: str) -> None:
     token = RandomDexSwapConfig.from_token
     to_token = RandomDexSwapConfig.to_token
     amount = RandomDexSwapConfig.amount
+    use_percentage = RandomDexSwapConfig.use_percentage
+    swap_percentage = RandomDexSwapConfig.swap_percentage
     num_swaps = RandomDexSwapConfig.num_swaps
     swap_list = [SyncSwapSwap, PunkSwap, SkyDromeSwap, SpaceFiSwap, ZebraSwap]
     for _ in range(num_swaps):
@@ -217,8 +219,8 @@ async def process_random_dex_swap(private_key: str) -> None:
                                      from_token=token,
                                      to_token=to_token,
                                      amount=amount,
-                                     use_percentage=False,
-                                     swap_percentage=0,
+                                     use_percentage=use_percentage,
+                                     swap_percentage=swap_percentage,
                                      swap_all_balance=False)
 
         logger.info(random_dex_swap)
@@ -546,7 +548,13 @@ async def process_layerbank_withdraw(private_key: str) -> None:
     )
     logger.info(lending)
 
-    await lending.withdraw()
+    while True:
+        withdrawn = await lending.withdraw()
+        if withdrawn == 'ZeroBalance':
+            break
+        if withdrawn is True:
+            break
+        await sleep(10)
 
 
 async def process_deposit_aave(private_key: str) -> None:
@@ -577,7 +585,13 @@ async def process_withdraw_aave(private_key: str) -> None:
         remove_percentage=remove_percentage,
         remove_all=remove_all
     )
-    await aave.withdraw()
+    while True:
+        withdrawn = await aave.withdraw()
+        if withdrawn == 'ZeroBalance':
+            break
+        if withdrawn is True:
+            break
+        await sleep(10)
 
 
 async def process_l2pass_mint(private_key: str) -> None:

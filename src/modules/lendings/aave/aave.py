@@ -86,13 +86,14 @@ class Aave(Account):
                 f'Successfully deposited {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')
 
     @retry()
-    async def withdraw(self) -> None:
+    async def withdraw(self) -> Union[str, bool]:
         contract = self.load_contract(contracts['aave']['aave_contract'], self.web3, abi_names['aave'])
         deposited_amount = await self.get_deposit_amount()
         amount = int(self.amount * 10 ** 18)
-        if deposited_amount == 0:
+        if deposited_amount <= (0.000000001 * 10 ** 18):
             self.logger.error(f'Your deposited amount is 0 | [{self.account_address}]')
-            return
+            return 'ZeroBalance'
+
         if self.remove_all is True:
             amount = deposited_amount
         if self.use_percentage:
@@ -128,3 +129,5 @@ class Aave(Account):
         if confirmed:
             self.logger.success(
                 f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://scrollscan.com/tx/{tx_hash}')
+            return True
+        return False

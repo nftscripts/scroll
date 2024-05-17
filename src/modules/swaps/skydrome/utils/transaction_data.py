@@ -31,14 +31,15 @@ def get_amount_out(contract: Contract, amount: int, from_token_address: Address,
 
 def create_swap_tx(from_token: str, to_token: str, contract: Contract, from_token_address: str,
                    to_token_address: str, account_address: Address, amount: int, web3: Web3) -> TxParams:
-    amount_out, swap_type = get_amounts_out(contract, amount, from_token_address, to_token_address)
+    amount_out, swap_type = get_amounts_out(contract, amount, web3.to_checksum_address(from_token_address),
+                                            web3.to_checksum_address(to_token_address))
     if from_token.lower() == 'eth':
         tx = contract.functions.swapExactETHForTokens(
             int(amount_out * (1 - SLIPPAGE)),
             [
                 [
-                    Web3.to_checksum_address(from_token_address),
-                    Web3.to_checksum_address(to_token_address),
+                    web3.to_checksum_address(from_token_address),
+                    web3.to_checksum_address(to_token_address),
                     swap_type
                 ]
             ],
@@ -56,8 +57,8 @@ def create_swap_tx(from_token: str, to_token: str, contract: Contract, from_toke
             int(amount_out * (1 - SLIPPAGE)),
             [
                 [
-                    Web3.to_checksum_address(from_token_address),
-                    Web3.to_checksum_address(to_token_address),
+                    web3.to_checksum_address(from_token_address),
+                    web3.to_checksum_address(to_token_address),
                     swap_type
                 ]
             ],
@@ -75,8 +76,8 @@ def create_swap_tx(from_token: str, to_token: str, contract: Contract, from_toke
             int(amount_out * (1 - SLIPPAGE)),
             [
                 [
-                    Web3.to_checksum_address(from_token_address),
-                    Web3.to_checksum_address(to_token_address),
+                    web3.to_checksum_address(from_token_address),
+                    web3.to_checksum_address(to_token_address),
                     swap_type
                 ]
             ],

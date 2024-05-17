@@ -71,8 +71,8 @@ class BaseSwap(ABC, Account):
             self.logger.error(f'📉 | Not enough balance for wallet {self.account_address}')
             return
 
-        amount_out = self.get_amount_out(contract, amount, Web3.to_checksum_address(from_token_address),
-                                         Web3.to_checksum_address(to_token_address))
+        amount_out = self.get_amount_out(contract, amount, self.web3.to_checksum_address(from_token_address),
+                                         self.web3.to_checksum_address(to_token_address))
 
         if self.from_token.lower() != 'eth':
             await self.approve_token(amount, self.private_key, from_token_address, self.contract_address,

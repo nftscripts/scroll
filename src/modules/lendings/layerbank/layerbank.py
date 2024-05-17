@@ -136,12 +136,12 @@ class LayerBankWithdraw(Account):
     def __repr__(self) -> str:
         return f'{self.__class__.__name__} | [{self.account_address}]'
 
-    async def withdraw(self) -> None:
+    async def withdraw(self) -> Union[str, bool]:
         balance = self.get_wallet_balance('...', '0x274C3795dadfEbf562932992bF241ae087e0a98C')
 
         if balance == 0:
             self.logger.warning(f"You don't have any tokens to withdraw | [{self.account_address}]")
-            return
+            return 'ZeroBalance'
 
         if self.use_percentage:
             amount = int(balance * self.percentage)
@@ -162,11 +162,15 @@ class LayerBankWithdraw(Account):
         })
 
         tx_hash = self.sign_transaction(tx)
-        self.wait_until_tx_finished(tx_hash)
+        confirmed = self.wait_until_tx_finished(tx_hash)
 
-        self.logger.success(
-            f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://blockscout.scroll.io/tx/{tx_hash}'
-        )
-        if USE_DATABASE:
-            await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
-                                          self.__class__.__name__, amount / 10 ** 18)
+        if confirmed:
+            self.logger.success(
+                f'Successfully withdrawn {amount / 10 ** 18} ETH | TX: https://blockscout.scroll.io/tx/{tx_hash}'
+            )
+            if USE_DATABASE:
+                await self.db_utils.add_to_db(self.account_address, f'https://blockscout.scroll.io/tx/{tx_hash}',
+                                              self.__class__.__name__, amount / 10 ** 18)
+
+            return True
+        return False

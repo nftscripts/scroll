@@ -35,7 +35,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
         tx = contract.functions.swapExactTokensForETH(
             amount,
             int(amount_out * (1 - SLIPPAGE)),
-            [from_token_address, to_token_address],
+            [web3.to_checksum_address(from_token_address), web3.to_checksum_address(to_token_address)],
             account_address,
             int(time() + 1200)
         ).build_transaction({

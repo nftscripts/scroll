@@ -24,7 +24,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
     if from_token.lower() == 'eth':
         tx = contract.functions.swapExactETHForTokens(
             int(amount_out * (1 - SLIPPAGE)),
-            [Web3.to_checksum_address(from_token_address), Web3.to_checksum_address(to_token_address)],
+            [web3.to_checksum_address(from_token_address), web3.to_checksum_address(to_token_address)],
             account_address,
             int(time() + 1200)
         ).build_transaction({
@@ -37,7 +37,7 @@ def create_swap_tx(from_token: str, contract: Contract, amount_out: int, from_to
         tx = contract.functions.swapExactTokensForTokens(
             amount,
             int(amount_out * (1 - SLIPPAGE)),
-            [from_token_address, to_token_address],
+            [web3.to_checksum_address(from_token_address), web3.to_checksum_address(to_token_address)],
             account_address,
             int(time() + 1200)
         ).build_transaction({
@@ -54,7 +54,7 @@ def create_liquidity_tx(from_token: str, contract: Contract, amount_out: int, to
                         account_address: Address, amount: int, web3: Web3) -> TxParams:
     if from_token.lower() == 'eth':
         tx = contract.functions.addLiquidityETH(
-            to_token_address,
+            web3.to_checksum_address(to_token_address),
             amount_out,
             int(amount_out * (1 - SLIPPAGE)),
             int(amount * (1 - SLIPPAGE)),
@@ -69,7 +69,7 @@ def create_liquidity_tx(from_token: str, contract: Contract, amount_out: int, to
     else:
         from_token_address = tokens[from_token]
         tx = contract.functions.addLiquidity(
-            from_token_address,
+            web3.to_checksum_address(from_token_address),
             to_token_address,
             amount,
             amount_out,
@@ -91,7 +91,7 @@ def create_liquidity_remove_tx(web3: Web3, contract: Contract, from_token_pair_a
                                account_address: Address, token: str) -> TxParams:
     if token.lower() == 'eth':
         tx = contract.functions.removeLiquidityETH(
-            from_token_pair_address,
+            web3.to_checksum_address(from_token_pair_address),
             amount,
             0,
             0,
@@ -106,8 +106,8 @@ def create_liquidity_remove_tx(web3: Web3, contract: Contract, from_token_pair_a
     else:
         from_token_address = tokens[token]
         tx = contract.functions.removeLiquidity(
-            from_token_address,
-            from_token_pair_address,
+            web3.to_checksum_address(from_token_address),
+            web3.to_checksum_address(from_token_pair_address),
             amount,
             0,
             0,

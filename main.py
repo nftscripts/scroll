@@ -34,6 +34,7 @@ async def main() -> None:
     }
     tasks = []
 
+    random.shuffle(private_keys)
     for private_key in private_keys:
         patterns = active_module.copy()
 

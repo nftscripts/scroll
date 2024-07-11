@@ -117,7 +117,12 @@ class OkxDeposit(Account):
         self.withdraw_all = withdraw_all
 
     def __repr__(self) -> str:
-        return f'Withdrawing {self.amount} ETH from {self.account_address} to {self.receiver_address} | CHAIN: {self.from_chain}'
+        if self.withdraw_all:
+            balance = self.get_wallet_balance('ETH', '...')
+            amount = (int(balance - self.keep_value * 10 ** 18)) / 10 ** 18
+        else:
+            amount = self.amount
+        return f'Withdrawing {amount} ETH from {self.account_address} to {self.receiver_address} | CHAIN: {self.from_chain}'
 
     @retry()
     async def deposit(self) -> None:
@@ -147,7 +152,7 @@ class OkxDeposit(Account):
         self.logger.success(
             f'Successfully withdrawn {round((amount / 10 ** 18), 6)} from {self.account.address} to {self.receiver_address} TX: {self.scan}/{tx_hash}'
         )
-
+        self.logger.info('Sleeping 5 minutes before SubAccount => MainAccount transfer...')
         await sleep(300)
         logger.debug('Transferring from SubAccount to MainAccount')
         await transfer_from_subaccs_to_main()

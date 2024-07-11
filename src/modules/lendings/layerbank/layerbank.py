@@ -151,7 +151,7 @@ class LayerBankWithdraw(Account):
         if self.withdraw_all:
             amount = balance
 
-        tx = self.contract.functions.redeemUnderlying(
+        tx = self.contract.functions.redeemToken(
             self.web3.to_checksum_address('0x274C3795dadfEbf562932992bF241ae087e0a98C'),
             amount
         ).build_transaction({

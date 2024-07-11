@@ -52,12 +52,12 @@ class Account(Utils):
                 receipts = self.web3.eth.get_transaction_receipt(tx_hash)
                 status = receipts.get("status")
                 if status == 1:
-                    self.logger.success(f"Transaction confirmed! https://scrollscan.com/tx/{tx_hash}")
+                    self.logger.success(f"Transaction confirmed! {tx_hash}")
                     return True
                 elif status is None:
                     sleep(0.3)
                 else:
-                    self.logger.error(f"Transaction failed! https://scrollscan.com/tx/{tx_hash}")
+                    self.logger.error(f"Transaction failed! {tx_hash}")
                     return False
             except TransactionNotFound:
                 if time() - start_time > max_wait_time:

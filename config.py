@@ -46,7 +46,7 @@ punk_swap_liquidity_remove = False
 spacefi_liquidity = False
 spacefi_liquidity_remove = False
 
-syncswap_liquidity = False
+syncswap_liquidity = True
 syncswap_liquidity_remove = False
 
 skydrome_liquidity = False
@@ -139,15 +139,17 @@ class OwlBridgeConfig:
 
 
 class SwapAllTokensConfig:
-    tokens_list = ['USDT', 'USDC', 'PUNK']
+    tokens_list = ['WETH', 'USDC', 'USDT', 'WBTC', 'DAI']
     to_token = 'ETH'
 
 
 class RandomDexSwapConfig:
     from_token = 'ETH'
-    to_token = ['USDT', 'USDC']
-    amount = [0.001, 0.0015]
-    num_swaps = 2
+    to_token = ['USDC', 'USDT', 'WBTC', 'DAI']
+    amount = [0.001, 0.003]
+    use_percentage = False
+    swap_percentage = [0.1, 0.2]
+    num_swaps = [1, 4]
 
 
 class SyncSwapSwapConfig:

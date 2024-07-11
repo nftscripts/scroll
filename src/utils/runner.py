@@ -213,6 +213,13 @@ async def process_random_dex_swap(private_key: str) -> None:
     swap_percentage = RandomDexSwapConfig.swap_percentage
     num_swaps = RandomDexSwapConfig.num_swaps
     swap_list = [SyncSwapSwap, PunkSwap, SkyDromeSwap, SpaceFiSwap, ZebraSwap]
+    if isinstance(num_swaps, list):
+        num_swaps = random.randint(num_swaps[0], num_swaps[1])
+    elif isinstance(num_swaps, int):
+        num_swaps = num_swaps
+    else:
+        raise TypeError(f'num_swaps must be int or list[int]. Got {type(num_swaps)}')
+
     for _ in range(num_swaps):
         swap_class = random.choice(swap_list)
         random_dex_swap = swap_class(private_key=private_key,

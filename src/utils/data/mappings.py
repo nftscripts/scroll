@@ -35,4 +35,5 @@ module_handlers = {
     'zk_stars': process_zkstars_mint,
     'zebra_swap': process_zebra_swap,
     'multi_approve': process_multi_approve,
+    'random_add_liquidity': process_random_liquidity
 }

@@ -205,6 +205,70 @@ async def process_swap_all_to_eth(private_key: str) -> None:
                 continue
 
 
+async def process_random_liquidity(private_key: str) -> None:
+    token = RandomLiquidityConfig.token
+    token2 = RandomLiquidityConfig.token2
+    amount = RandomLiquidityConfig.amount
+    use_percentage = RandomLiquidityConfig.use_percentage
+    liquidity_percentage = RandomLiquidityConfig.liquidity_percentage
+    num_transactions = RandomLiquidityConfig.num_transactions
+
+    liquidity_list = [SyncSwapLiquidity, PunkSwapLiquidity, SkyDromeLiquidity, SpaceFiLiquidity]
+    lending_list = [LayerBankDeposit, Aave]
+
+    if isinstance(num_transactions, list):
+        num_transactions = random.randint(num_transactions[0], num_transactions[1])
+    elif isinstance(num_transactions, int):
+        num_transactions = num_transactions
+    else:
+        raise TypeError(f'num_swaps must be int or list[int]. Got {type(num_transactions)}')
+
+    for _ in range(num_transactions):
+        liq_class = random.choice(liquidity_list)
+        lending_class = random.choice(lending_list)
+        final_list = [liq_class, lending_class]
+
+        liquidity_object = random.choice(final_list)
+
+        if liquidity_object is liq_class:
+            random_liquidity = liq_class(private_key=private_key,
+                                         token=token,
+                                         token2=token2,
+                                         amount=amount,
+                                         use_percentage=use_percentage,
+                                         liquidity_percentage=liquidity_percentage)
+
+            logger.info(random_liquidity)
+            await random_liquidity.add_liquidity()
+
+        elif liquidity_object is lending_class:
+            if liquidity_object.__name__ == 'LayerBankDeposit':
+                deposit = LayerBankDeposit(
+                    private_key=private_key,
+                    amount=amount,
+                    use_percentage=use_percentage,
+                    percentage=liquidity_percentage,
+                    only_collateral=False
+                )
+                logger.info(deposit)
+                await deposit.deposit()
+            else:
+                deposit = Aave(
+                    private_key=private_key,
+                    amount=amount,
+                    use_percentage=use_percentage,
+                    deposit_percentage=liquidity_percentage,
+                    remove_percentage=0.01,
+                    remove_all=False
+                )
+                logger.info(deposit)
+                await deposit.deposit()
+
+        random_sleep = random.randint(MIN_PAUSE, MAX_PAUSE)
+        logger.info(f'Sleeping {random_sleep} seconds...')
+        await sleep(random_sleep)
+
+
 async def process_random_dex_swap(private_key: str) -> None:
     token = RandomDexSwapConfig.from_token
     to_token = RandomDexSwapConfig.to_token

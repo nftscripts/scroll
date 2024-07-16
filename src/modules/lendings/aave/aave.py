@@ -47,6 +47,9 @@ class Aave(Account):
         self.remove_all = remove_all
         self.db_utils = DataBaseUtils('lending')
 
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__} | [{self.account_address}]'
+
     async def get_deposit_amount(self):
         aave_weth_contract = self.load_contract(contracts['aave']['aave_weth'], self.web3, 'erc20')
 

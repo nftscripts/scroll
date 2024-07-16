@@ -68,7 +68,7 @@
   },
   {
     "type": "function",
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "outputs": [
       {
         "type": "uint256",

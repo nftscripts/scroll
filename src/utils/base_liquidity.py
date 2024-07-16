@@ -30,7 +30,11 @@ class BaseLiquidity(ABC, Account):
 
         self.private_key = private_key
         self.token = token
+
         self.token2 = token2
+        if isinstance(token2, list):
+            self.token2 = random.choice(token2)
+
         if isinstance(amount, List):
             self.amount = round(random.uniform(amount[0], amount[1]), 7)
         elif isinstance(amount, float):

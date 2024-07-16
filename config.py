@@ -52,6 +52,8 @@ syncswap_liquidity_remove = False
 skydrome_liquidity = False
 skydrome_liquidity_remove = False
 
+random_add_liquidity = False
+
 # --- NFT --- #
 zerius = False
 l2pass = False
@@ -214,9 +216,18 @@ class WrapperConfig:
 
     action = 'unwrap'
     amount = [0.001, 0.002]
-    use_all_balance = True
-    use_percentage = False
-    percentage_to_wrap = [0.1, 0.4]
+    use_all_balance = False
+    use_percentage = True
+    percentage_to_wrap = [0.1, 0.2]
+
+
+class RandomLiquidityConfig:
+    token = 'ETH'
+    token2 = ['USDT']
+    amount = [0.0004, 0.0004]
+    use_percentage = True
+    liquidity_percentage = [0.1, 0.2]
+    num_transactions = [1, 1]
 
 
 class PunkSwapLiquidityConfig:
